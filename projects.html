@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Aly Embaby</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── SINGLE-COLUMN STACK ── */
+    .projects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .proj-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.25s;
+      scroll-margin-top: 15rem;
+    }
+    .proj-card:hover { border-color: rgba(0,212,255,0.28); }
+
+    /* ── MAIN IMAGE SLOT ── */
+    .proj-main-img {
+      width: 100%; height: 360px;
+      position: relative; overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .proj-card.featured .proj-main-img { height: 420px; }
+
+    /* When you add a real screenshot/GIF:
+       <img src="images/your-file.png" alt="..." />
+       or
+       <img src="images/your-file.gif" alt="..." />  */
+    .proj-main-img img,
+    .proj-main-img video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    /* Subtle type-based tint for placeholder state */
+    .proj-main-img.unity   { background: linear-gradient(145deg, #090f1c 0%, #0c1828 100%); }
+    .proj-main-img.unreal  { background: linear-gradient(145deg, #090f1c 0%, #11091c 100%); }
+    .proj-main-img.cpp     { background: linear-gradient(145deg, #090f1c 0%, #091a0e 100%); }
+    .proj-main-img.design  { background: linear-gradient(145deg, #090f1c 0%, #170a1e 100%); }
+
+    .proj-placeholder {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.5rem;
+      text-align: center; padding: 2rem;
+      pointer-events: none;
+    }
+    .proj-placeholder .p-icon { font-size: 2.8rem; opacity: 0.12; }
+    .proj-placeholder .p-name {
+      font-family: var(--font-head);
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700; letter-spacing: -0.03em;
+      color: var(--text); opacity: 0.08;
+    }
+    .proj-placeholder .p-hint {
+      font-family: var(--font-head);
+      font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted2); opacity: 0.5;
+      margin-top: 0.25rem;
+      border: 1px dashed rgba(255,255,255,0.08);
+      padding: 0.3rem 0.9rem; border-radius: 3px;
+    }
+
+    /* ── THUMBNAIL ROW ── */
+    .proj-thumbs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+    .proj-thumb {
+      height: 100px;
+      background: var(--surface2);
+      border-right: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      transition: background 0.2s;
+      cursor: default;
+    }
+    .proj-thumb:last-child { border-right: none; }
+    .proj-thumb:hover { background: rgba(0,212,255,0.03); }
+
+    /* When you add more screenshots:
+       <img src="images/screenshot-2.png" alt="..." /> inside .proj-thumb */
+    .proj-thumb img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .thumb-add {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0.3rem;
+      color: var(--muted2); opacity: 0.35;
+    }
+    .thumb-add .t-plus {
+      font-size: 1.4rem; font-weight: 200; line-height: 1;
+    }
+    .thumb-add .t-label {
+      font-family: var(--font-head);
+      font-size: 0.58rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+
+    /* ── CARD BODY ── */
+    .proj-body {
+      padding: 1.75rem 2rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+
+    .proj-top {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 0.75rem; flex-wrap: wrap;
+    }
+
+    .proj-title {
+      font-family: var(--font-head);
+      font-size: 1.15rem; font-weight: 700; line-height: 1.2;
+    }
+
+    .proj-engine {
+      font-family: var(--font-head);
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--cyan); background: var(--cyan-dim);
+      border: 1px solid rgba(0,212,255,0.15);
+      padding: 0.22rem 0.7rem; border-radius: 3px;
+      white-space: nowrap; height: fit-content;
+    }
+
+    .proj-desc {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 0.3rem;
+    }
+    .proj-desc li {
+      font-size: 0.875rem; color: var(--muted);
+      line-height: 1.65; padding-left: 1rem; position: relative;
+    }
+    .proj-desc li::before {
+      content: '›'; position: absolute; left: 0;
+      color: var(--cyan); font-weight: 700;
+    }
+
+    .proj-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 1rem; border-top: 1px solid var(--border);
+      gap: 0.75rem; flex-wrap: wrap;
+    }
+
+    .proj-links { display: flex; gap: 1.25rem; }
+    .proj-links a {
+      font-family: var(--font-head);
+      font-size: 0.78rem; font-weight: 500;
+      letter-spacing: 0.04em; color: var(--muted);
+      transition: color 0.2s;
+    }
+    .proj-links a:hover { color: var(--cyan); }
+
+    .proj-badge {
+      font-family: var(--font-head);
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--green); background: var(--green-dim);
+      border: 1px solid rgba(0,232,122,0.2);
+      padding: 0.2rem 0.6rem; border-radius: 3px;
+    }
+
+    @media (max-width: 640px) {
+      .proj-main-img { height: 240px; }
+      .proj-card.featured .proj-main-img { height: 280px; }
+      .proj-thumb { height: 75px; }
+      .proj-body { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="page-bg"></canvas>
+
+  <div class="bg-glow" aria-hidden="true">
+    <div class="bg-blob b1"></div>
+    <div class="bg-blob b2"></div>
+    <div class="bg-blob b3"></div>
+  </div>
+
+  <nav>
+    <a href="index.html" class="logo">Aly<span>.</span></a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="Aly_Embaby_Resume.pdf" download class="nav-resume">Resume</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+
+    <div class="page-hero reveal">
+      <span class="overline">My Work</span>
+      <h1>Projects</h1>
+      <p>Games, systems, and design work built at Algonquin College and beyond.</p>
+    </div>
+
+    <div class="projects-list">
+
+      <!-- ── GOING ONCE! ── -->
+      <div class="proj-card featured reveal" id="going-once">
+        <div class="proj-main-img unity">
+          <div class="proj-placeholder">
+            <span class="p-icon">&#127918;</span>
+            <span class="p-name">Going Once!</span>
+            <span class="p-hint">Add GIF or screenshot</span>
+          </div>
+          <!-- <img src="images/going-once.gif" alt="Going Once! gameplay" /> -->
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+            <!-- <img src="images/going-once-2.png" alt="" /> -->
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+            <!-- <img src="images/going-once-3.png" alt="" /> -->
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+            <!-- <img src="images/going-once-4.png" alt="" /> -->
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Going Once! &mdash; Capstone Project</h2>
+            <span class="proj-engine">Unity</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">UI Programmer</span>
+            <span class="tag-cyan">UI Toolkit</span>
+            <span class="tag-purple">Minigames</span>
+            <span class="tag-purple">Achievements</span>
+            <span class="tag-green">11-Person Team</span>
+          </div>
+          <ul class="proj-desc">
+            <li>Designed and implemented a complete UI framework including menus, loading screens, and adaptive resolution handling.</li>
+            <li>Built interactive UI systems using Unity UI Toolkit with runtime graphics configuration and dynamic settings controls.</li>
+            <li>Implemented achievement and tutorial systems with persistent state tracking.</li>
+            <li>Implemented multiple minigames using reusable gameplay systems.</li>
+            <li>Managed tasks in Jira and collaborated via Git within an 11-person team, producing UML and sequence diagrams.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+              <a href="https://github.com/aly44" target="_blank">&#8599; GitHub</a>
+            </div>
+            <span class="proj-badge">&#11088; Capstone 2025&ndash;2026</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COWBOY AND DEMONS ── -->
+      <div class="proj-card reveal" id="cowboy-demons">
+        <div class="proj-main-img cpp">
+          <div class="proj-placeholder">
+            <span class="p-icon">&#129312;</span>
+            <span class="p-name">Cowboy and Demons</span>
+            <span class="p-hint">Add GIF or screenshot</span>
+          </div>
+          <!-- <img src="images/cowboy-demons.gif" alt="Cowboy and Demons gameplay" /> -->
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Cowboy and Demons</h2>
+            <span class="proj-engine">C++ / Unity</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">Weapons System</span>
+            <span class="tag-cyan">Inventory</span>
+            <span class="tag-purple">Enemy UI</span>
+            <span class="tag-purple">Controller Support</span>
+          </div>
+          <ul class="proj-desc">
+            <li>Implemented two custom weapons: AoE splash damage and single-target with slow/freeze effects.</li>
+            <li>Developed an inventory system to manage weapons and gameplay items.</li>
+            <li>Designed and integrated an enemy health UI system for real-time combat feedback.</li>
+            <li>Added controller support for improved accessibility and input flexibility.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+              <a href="https://github.com/aly44" target="_blank">&#8599; GitHub</a>
+            </div>
+            <span class="proj-badge">Mini Capstone 2025</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MARIO GAMES ── -->
+      <div class="proj-card reveal">
+        <div class="proj-main-img unity">
+          <div class="proj-placeholder">
+            <span class="p-icon">&#11088;</span>
+            <span class="p-name">Mario Games</span>
+            <span class="p-hint">Add GIF or screenshot</span>
+          </div>
+          <!-- <img src="images/mario-games.gif" alt="Mario Games gameplay" /> -->
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Mario Games</h2>
+            <span class="proj-engine">Unity &amp; Unreal</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">Level Design</span>
+            <span class="tag-cyan">AI Programming</span>
+            <span class="tag-purple">Blueprints</span>
+            <span class="tag-purple">Boss Mechanics</span>
+          </div>
+          <ul class="proj-desc">
+            <li>Built immersive levels using Tilemaps and Blueprints with layered collisions and interactive elements.</li>
+            <li>Created state-driven AI for enemies (Koopa Troopa, Boo) and multi-phase bosses (Boom Boom).</li>
+            <li>Developed dynamic mechanics — toggleable coins, breakable blocks, original power-ups.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+              <a href="https://github.com/aly44" target="_blank">&#8599; GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TEAM WEBSITE ── -->
+      <div class="proj-card reveal">
+        <div class="proj-main-img design">
+          <div class="proj-placeholder">
+            <span class="p-icon">&#127760;</span>
+            <span class="p-name">Team Website</span>
+            <span class="p-hint">Add GIF or screenshot</span>
+          </div>
+          <!-- <img src="images/team-website.png" alt="Team Website" /> -->
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Team Website</h2>
+            <span class="proj-engine">HTML / JavaScript</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">Dark / Light Mode</span>
+            <span class="tag-cyan">GitHub Pages</span>
+            <span class="tag-purple">UI Transitions</span>
+          </div>
+          <ul class="proj-desc">
+            <li>Designed and developed a team website from scratch using HTML and JavaScript.</li>
+            <li>Implemented dark mode and light mode with dynamic UI transitions.</li>
+            <li>Integrated support for embedded videos, images, GIFs, and external links.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+              <a href="https://github.com/aly44" target="_blank">&#8599; GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2D PLATFORMER ── -->
+      <div class="proj-card reveal" id="platformer">
+        <div class="proj-main-img unreal">
+          <div class="proj-placeholder">
+            <span class="p-icon">&#127381;</span>
+            <span class="p-name">2D Platformer</span>
+            <span class="p-hint">Add GIF or screenshot</span>
+          </div>
+          <!-- <img src="images/platformer.gif" alt="2D Platformer gameplay" /> -->
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">2D Platformer &mdash; Level Design</h2>
+            <span class="proj-engine">Unreal Engine 5</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">Level Design</span>
+            <span class="tag-cyan">UE5</span>
+            <span class="tag-purple">Design Doc</span>
+            <span class="tag-purple">Blueprints</span>
+          </div>
+          <ul class="proj-desc">
+            <li>Multi-room platformer with puzzles, combat, and environmental challenges in UE5.</li>
+            <li>Teleporters, dynamic platforms, and skill gates with balanced pacing and player guidance.</li>
+            <li>Documented with walkthroughs, pacing charts, and annotated illustrations.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+              <a href="https://github.com/aly44" target="_blank">&#8599; GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 2D SURVIVAL GAME ── -->
+      <div class="proj-card reveal">
+        <div class="proj-main-img cpp">
+          <div class="proj-placeholder">
+            <span class="p-icon">&#9876;</span>
+            <span class="p-name">2D Survival Game</span>
+            <span class="p-hint">Add GIF or screenshot</span>
+          </div>
+          <!-- <img src="images/survival-game.gif" alt="2D Survival Game gameplay" /> -->
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">2D Survival Game</h2>
+            <span class="proj-engine">C++</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C++</span>
+            <span class="tag-cyan">Enemy AI</span>
+            <span class="tag-purple">HUD</span>
+            <span class="tag-purple">Spawning</span>
+          </div>
+          <ul class="proj-desc">
+            <li>Top-down game with player controls, weapon leveling, and HUD for stats.</li>
+            <li>Multi-hit weapon mechanics, enemy AI, and dynamic spawning systems.</li>
+            <li>Optimized through systematic debugging and performance tuning.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+              <a href="https://github.com/aly44" target="_blank">&#8599; GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── UI/UX DESIGN ── -->
+      <div class="proj-card reveal">
+        <div class="proj-main-img design">
+          <div class="proj-placeholder">
+            <span class="p-icon">&#127912;</span>
+            <span class="p-name">Mobile Game UI/UX</span>
+            <span class="p-hint">Add GIF or screenshot</span>
+          </div>
+          <!-- <img src="images/uiux-design.png" alt="Mobile Game UI/UX Design" /> -->
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Mobile Game UI/UX Design</h2>
+            <span class="proj-engine">Photoshop &amp; Illustrator</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">UI/UX</span>
+            <span class="tag-cyan">Accessibility</span>
+            <span class="tag-purple">CARP</span>
+            <span class="tag-purple">User Testing</span>
+          </div>
+          <ul class="proj-desc">
+            <li>Accessible mobile game interface applying CARP and accessibility principles.</li>
+            <li>Diegetic and non-diegetic UI elements to enhance gameplay immersion.</li>
+            <li>User testing sessions to optimize engagement based on real feedback.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+              <a href="https://github.com/aly44" target="_blank">&#8599; GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ARCHITECTURAL 3D MODEL ── -->
+      <div class="proj-card reveal">
+        <div class="proj-main-img design">
+          <div class="proj-placeholder">
+            <span class="p-icon">&#127968;</span>
+            <span class="p-name">Architectural 3D Model</span>
+            <span class="p-hint">Add GIF or screenshot</span>
+          </div>
+          <!-- <img src="images/3d-model.png" alt="Architectural 3D Model" /> -->
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus">+</span><span class="t-label">Photo</span></div>
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Architectural 3D Model</h2>
+            <span class="proj-engine">3D MAX</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">3D Modeling</span>
+            <span class="tag-cyan">Texturing</span>
+            <span class="tag-purple">UV Mapping</span>
+            <span class="tag-purple">Polygon Modeling</span>
+          </div>
+          <ul class="proj-desc">
+            <li>Detailed, scalable 3D model of a two-story house with precise interior layouts.</li>
+            <li>Advanced polygon modeling, texturing, and UV scaling for accuracy and realism.</li>
+            <li>Optimized for export and integration into game engines.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+              <a href="https://github.com/aly44" target="_blank">&#8599; GitHub</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>Aly Embaby &nbsp;&middot;&nbsp; Game Developer &nbsp;&middot;&nbsp; Ottawa, ON &nbsp;&middot;&nbsp; 2026</p>
+  </footer>
+
+  <script src="bg.js"></script>
+  <script>
+    (function () {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    })();
+  </script>
+</body>
+</html>

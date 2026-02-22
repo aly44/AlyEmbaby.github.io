@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Aly Embaby</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── ABOUT INTRO ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 250px;
+      gap: 3rem;
+      margin-bottom: 5rem;
+    }
+    @media (max-width: 680px) { .about-grid { grid-template-columns: 1fr; } }
+
+    .about-text p {
+      color: var(--muted); font-size: 1rem;
+      line-height: 1.8; margin-bottom: 1rem;
+    }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-text strong { color: var(--text); font-weight: 500; }
+
+    .info-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px; padding: 1.5rem;
+      height: fit-content;
+    }
+    .info-box-title {
+      font-family: var(--font-head);
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 1.25rem;
+    }
+    .info-row {
+      display: flex; flex-direction: column; gap: 0.08rem;
+      margin-bottom: 1rem;
+    }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-lbl {
+      font-size: 0.65rem; color: var(--muted2);
+      font-family: var(--font-head);
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .info-val { font-size: 0.88rem; color: var(--text); }
+
+    /* ── EXPERIENCE ── */
+    .exp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--cyan);
+      border-radius: 0 6px 6px 0;
+      padding: 1.75rem 1.75rem 1.75rem 2rem;
+      transition: box-shadow 0.2s;
+    }
+    .exp-card:hover { box-shadow: -4px 0 24px rgba(0,212,255,0.08); }
+
+    .exp-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 1rem; flex-wrap: wrap;
+      margin-bottom: 0.2rem;
+    }
+    .exp-title {
+      font-family: var(--font-head);
+      font-size: 1rem; font-weight: 700;
+    }
+    .exp-date {
+      font-family: var(--font-head);
+      font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--green); background: var(--green-dim);
+      border: 1px solid rgba(0,232,122,0.2);
+      padding: 0.2rem 0.65rem; border-radius: 3px;
+      white-space: nowrap;
+    }
+    .exp-company {
+      font-size: 0.88rem; color: var(--cyan);
+      margin-bottom: 1rem; font-weight: 500;
+    }
+    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+    .exp-bullets li {
+      font-size: 0.875rem; color: var(--muted);
+      line-height: 1.65; padding-left: 1rem; position: relative;
+    }
+    .exp-bullets li::before {
+      content: '›'; position: absolute; left: 0;
+      color: var(--cyan); font-weight: 700;
+    }
+
+    /* ── EDUCATION ── */
+    .edu-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px; padding: 1.75rem;
+      position: relative; overflow: hidden;
+    }
+    .edu-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+    }
+    .edu-name {
+      font-family: var(--font-head);
+      font-size: 1.05rem; font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+    .edu-meta {
+      font-size: 0.875rem; color: var(--muted);
+      margin-bottom: 1rem; line-height: 1.6;
+    }
+    .edu-meta strong { color: var(--text); font-weight: 500; }
+    .edu-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+    .skill-group {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px; padding: 1.1rem 1.25rem;
+      transition: border-color 0.2s;
+    }
+    .skill-group:hover { border-color: rgba(255,255,255,0.12); }
+    .skill-group h4 {
+      font-family: var(--font-head);
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 0.75rem;
+    }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  </style>
+</head>
+<body>
+
+  <canvas id="page-bg"></canvas>
+
+  <div class="bg-glow" aria-hidden="true">
+    <div class="bg-blob b1"></div>
+    <div class="bg-blob b2"></div>
+    <div class="bg-blob b3"></div>
+  </div>
+
+  <nav>
+    <a href="index.html" class="logo">Aly<span>.</span></a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html" class="active">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="Aly_Embaby_Resume.pdf" download class="nav-resume">Resume</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+
+    <div class="page-hero reveal">
+      <span class="overline">About</span>
+      <h1>Background &amp; Skills</h1>
+      <p>Experience, education, and everything I work with.</p>
+    </div>
+
+    <!-- INTRO + INFO -->
+    <div class="about-grid reveal">
+      <div class="about-text">
+        <p>
+          I'm <strong>Aly Embaby</strong>, a game development student at
+          <strong>Algonquin College</strong> finishing my Advanced Diploma in June 2026.
+        </p>
+        <p>
+          I currently work part-time as a <strong>Game Developer at Liquid Metal Games</strong>,
+          building and maintaining gameplay systems using Unreal Engine Blueprints and C++.
+        </p>
+        <p>
+          My work spans gameplay programming, UI systems, level design, and 3D art —
+          using <strong>Unity</strong>, <strong>Unreal Engine 5</strong>,
+          <strong>C++</strong>, <strong>C#</strong>, and a range of design and 3D tools.
+        </p>
+        <p>I care about the feel of a game as much as the code behind it.</p>
+      </div>
+      <div class="info-box">
+        <div class="info-box-title">Quick Info</div>
+        <div class="info-row">
+          <span class="info-lbl">Location</span>
+          <span class="info-val">Ottawa, ON</span>
+        </div>
+        <div class="info-row">
+          <span class="info-lbl">Languages</span>
+          <span class="info-val">English &amp; Arabic</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div class="sec-block reveal">
+      <div class="sec-head">
+        <span class="sec-num">01</span>
+        <span class="sec-line"></span>
+        <span class="sec-title">Experience</span>
+      </div>
+      <div class="exp-card">
+        <div class="exp-header">
+          <span class="exp-title">Game Developer (Part-Time)</span>
+          <span class="exp-date">2025 &mdash; Present</span>
+        </div>
+        <div class="exp-company">Liquid Metal Games</div>
+        <ul class="exp-bullets">
+          <li>Developed and maintained gameplay systems in Unreal Engine using Blueprints and C++.</li>
+          <li>Implemented and refined player movement, abilities, and interaction mechanics.</li>
+          <li>Diagnosed and resolved runtime defects through structured debugging.</li>
+          <li>Improved gameplay responsiveness and feature performance through optimization.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- EDUCATION -->
+    <div class="sec-block reveal">
+      <div class="sec-head">
+        <span class="sec-num">02</span>
+        <span class="sec-line"></span>
+        <span class="sec-title">Education</span>
+      </div>
+      <div class="edu-card">
+        <div class="edu-name">Algonquin College</div>
+        <div class="edu-meta">
+          Game Development &mdash; Advanced Diploma
+        </div>
+        <div class="edu-badges">
+          <span class="tag-muted">Game Design</span>
+          <span class="tag-muted">AI Development</span>
+          <span class="tag-muted">Level Design</span>
+          <span class="tag-muted">3D Modeling</span>
+          <span class="tag-muted">Graphics Programming</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="sec-block reveal">
+      <div class="sec-head">
+        <span class="sec-num">03</span>
+        <span class="sec-line"></span>
+        <span class="sec-title">Skills</span>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-group">
+          <h4>Game Engines</h4>
+          <div class="skill-tags">
+            <span class="tag-muted">Unity</span>
+            <span class="tag-muted">Unreal Engine 5</span>
+            <span class="tag-muted">Blueprints</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h4>Languages</h4>
+          <div class="skill-tags">
+            <span class="tag-muted">C++</span>
+            <span class="tag-muted">C#</span>
+            <span class="tag-muted">JavaScript</span>
+            <span class="tag-muted">GLSL</span>
+            <span class="tag-muted">OpenGL</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h4>Gameplay Systems</h4>
+          <div class="skill-tags">
+            <span class="tag-muted">GAS</span>
+            <span class="tag-muted">Scriptable Objects</span>
+            <span class="tag-muted">Animation Montages</span>
+            <span class="tag-muted">UI Toolkit</span>
+            <span class="tag-muted">Game Loops</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h4>Art &amp; 3D</h4>
+          <div class="skill-tags">
+            <span class="tag-muted">3D MAX</span>
+            <span class="tag-muted">Photoshop</span>
+            <span class="tag-muted">Illustrator</span>
+            <span class="tag-muted">UV Mapping</span>
+            <span class="tag-muted">Shaders</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h4>Tools &amp; Workflow</h4>
+          <div class="skill-tags">
+            <span class="tag-muted">Git</span>
+            <span class="tag-muted">Jira</span>
+            <span class="tag-muted">Visual Studio</span>
+            <span class="tag-muted">VS Code</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <h4>Documentation</h4>
+          <div class="skill-tags">
+            <span class="tag-muted">UML Diagrams</span>
+            <span class="tag-muted">Sequence Diagrams</span>
+            <span class="tag-muted">TDD</span>
+            <span class="tag-muted">Level Design Docs</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Aly Embaby &nbsp;&middot;&nbsp; Game Developer &nbsp;&middot;&nbsp; Ottawa, ON &nbsp;&middot;&nbsp; 2026</p>
+  </footer>
+
+  <script>
+    (function () {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    })();
+  </script>
+  <script src="bg.js"></script>
+</body>
+</html>
