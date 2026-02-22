@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact - Aly Embaby</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── CUSTOM CURSOR ── */
+    @media (hover: hover) { * { cursor: none !important; } }
+    #cursor {
+      position: fixed; left: -100px; top: -100px;
+      width: 22px; height: 22px;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease-out, opacity 0.3s;
+      opacity: 0;
+    }
+    #cursor::before, #cursor::after {
+      content: ''; position: absolute;
+      background: rgba(0,212,255,0.8);
+    }
+    #cursor::before {
+      width: 100%; height: 1px;
+      top: 50%; left: 0; transform: translateY(-50%);
+    }
+    #cursor::after {
+      width: 1px; height: 100%;
+      left: 50%; top: 0; transform: translateX(-50%);
+    }
+    .cur-dot {
+      position: absolute; width: 3px; height: 3px;
+      background: var(--cyan); border-radius: 50%;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+    }
+    #cursor.hov { transform: translate(-50%, -50%) scale(1.6); }
+    #cursor.hov::before, #cursor.hov::after { background: var(--cyan); }
+
+    /* ── SCROLL PROGRESS BAR ── */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      z-index: 9998;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(0,212,255,0.5);
+    }
+
+    /* ── PAGE HERO ── */
+    .page-hero { position: relative; overflow: hidden; }
+    .page-hero .watermark {
+      position: absolute;
+      top: 50%; right: -0.5rem;
+      transform: translateY(-50%);
+      font-family: var(--font-head);
+      font-size: clamp(5rem, 16vw, 10rem);
+      font-weight: 700; letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.025);
+      pointer-events: none; user-select: none;
+      line-height: 1;
+    }
+    .hero-anim {
+      opacity: 0;
+      animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── GLITCH ── */
+    #glitch-heading { position: relative; display: inline-block; }
+    #glitch-heading.glitching { animation: glitch-base 0.38s steps(1) forwards; }
+    #glitch-heading.glitching::before,
+    #glitch-heading.glitching::after {
+      content: attr(data-text);
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; pointer-events: none;
+    }
+    #glitch-heading.glitching::before {
+      color: #ff2d78;
+      animation: glitch-a 0.38s steps(2) forwards;
+      clip-path: polygon(0 18%, 100% 18%, 100% 44%, 0 44%);
+    }
+    #glitch-heading.glitching::after {
+      color: var(--cyan); opacity: 0.8;
+      animation: glitch-b 0.38s steps(2) forwards;
+      clip-path: polygon(0 58%, 100% 58%, 100% 82%, 0 82%);
+    }
+    @keyframes glitch-base {
+      0%  { transform: translateX(0); }
+      25% { transform: translateX(-5px) skewX(-1deg); }
+      75% { transform: translateX(4px); }
+      100%{ transform: translateX(0); }
+    }
+    @keyframes glitch-a {
+      0%  { transform: translateX(-10px); opacity: 0.9; }
+      50% { transform: translateX(7px); }
+      100%{ transform: translateX(-2px); opacity: 0; }
+    }
+    @keyframes glitch-b {
+      0%  { transform: translateX(10px); opacity: 0.8; }
+      50% { transform: translateX(-6px); }
+      100%{ transform: translateX(2px); opacity: 0; }
+    }
+
+    /* ── COPY TOAST ── */
+    #copy-toast {
+      position: fixed; bottom: 2rem; left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: var(--surface); border: 1px solid rgba(0,212,255,0.35);
+      color: var(--cyan); font-family: var(--font-head);
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.55rem 1.25rem; border-radius: 4px;
+      opacity: 0; pointer-events: none; z-index: 500;
+      transition: opacity 0.25s, transform 0.25s;
+      box-shadow: 0 0 24px rgba(0,212,255,0.15);
+    }
+    #copy-toast.show {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── AVAILABILITY BANNER ── */
+    .avail-banner {
+      display: flex; align-items: center; gap: 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--green);
+      border-radius: 0 6px 6px 0;
+      padding: 1.1rem 1.5rem;
+      margin-bottom: 3.5rem;
+    }
+    .avail-dot {
+      width: 7px; height: 7px;
+      background: var(--green); border-radius: 50%;
+      flex-shrink: 0;
+      animation: pulse-g 2s ease-in-out infinite;
+    }
+    @keyframes pulse-g {
+      0%,100% { opacity:1; box-shadow: 0 0 0 0 rgba(0,232,122,0.5); }
+      50%      { opacity:.7; box-shadow: 0 0 0 6px rgba(0,232,122,0); }
+    }
+    .avail-text { font-size: 0.9rem; color: var(--muted); }
+    .avail-text strong { color: var(--text); font-weight: 500; }
+
+    /* ── CONTACT GRID ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin-bottom: 1rem;
+    }
+    @media (max-width: 640px) { .contact-grid { grid-template-columns: 1fr; } }
+
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px; padding: 1.75rem 1.5rem;
+      display: flex; flex-direction: column; gap: 0.3rem;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+      position: relative; overflow: hidden;
+      text-decoration: none;
+    }
+    /* Top gradient bar */
+    .contact-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      opacity: 0; transition: opacity 0.25s;
+    }
+    /* Corner brackets */
+    .contact-card::after {
+      content: '';
+      position: absolute; bottom: 8px; right: 8px;
+      width: 14px; height: 14px;
+      border-bottom: 1px solid rgba(0,212,255,0.3);
+      border-right:  1px solid rgba(0,212,255,0.3);
+      opacity: 0; transition: opacity 0.25s;
+    }
+    .contact-card:hover {
+      border-color: rgba(0,212,255,0.3);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,212,255,0.06);
+      transform: translateY(-2px);
+    }
+    .contact-card:hover::before { opacity: 1; }
+    .contact-card:hover::after  { opacity: 1; }
+
+    /* Faint platform symbol watermark */
+    .c-symbol {
+      position: absolute; bottom: 0.75rem; right: 1rem;
+      font-family: var(--font-head);
+      font-size: 3.5rem; font-weight: 700; line-height: 1;
+      color: rgba(255,255,255,0.035);
+      pointer-events: none; user-select: none;
+      letter-spacing: -0.04em;
+    }
+
+    .c-platform {
+      font-family: var(--font-head);
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--cyan); margin-bottom: 0.5rem;
+    }
+    .c-value {
+      font-family: var(--font-head);
+      font-size: 0.95rem; font-weight: 600; color: var(--text);
+    }
+    .c-sub { font-size: 0.78rem; color: var(--muted); }
+
+    /* ── RESUME BOX ── */
+    .resume-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3rem 2.5rem; text-align: center;
+      animation: resume-breathe 4s ease-in-out infinite;
+    }
+    @keyframes resume-breathe {
+      0%, 100% { box-shadow: 0 0 0 1px transparent,  0 0 0 rgba(0,212,255,0); }
+      50%       { box-shadow: 0 0 0 1px rgba(0,212,255,0.12), 0 0 40px rgba(0,212,255,0.05); }
+    }
+    .resume-box .r-overline {
+      font-family: var(--font-head);
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--cyan); display: block; margin-bottom: 0.75rem;
+    }
+    .resume-box h2 {
+      font-family: var(--font-head);
+      font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem;
+    }
+    .resume-box p {
+      color: var(--muted); font-size: 0.9rem; margin-bottom: 1.75rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="scroll-progress"></div>
+  <div id="cursor"><div class="cur-dot"></div></div>
+
+  <canvas id="page-bg"></canvas>
+
+  <div class="bg-glow" aria-hidden="true">
+    <div class="bg-blob b1"></div>
+    <div class="bg-blob b2"></div>
+    <div class="bg-blob b3"></div>
+  </div>
+
+  <nav>
+    <a href="index.html" class="logo">Aly<span>.</span></a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+      <li><a href="Aly_Embaby_Resume.pdf" target="_blank" rel="noopener" class="nav-resume">Resume</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+
+    <div class="page-hero">
+      <span class="watermark" aria-hidden="true">HELLO</span>
+      <span class="overline hero-anim" id="typed-overline" style="animation-delay:0.1s"></span>
+      <h1 class="hero-anim" style="animation-delay:0.2s"><span id="glitch-heading" data-text="Get in Touch.">Get in Touch.</span></h1>
+      <p class="hero-anim" style="animation-delay:0.35s; color:var(--muted);">Open to jobs, internships, and collaborations. Feel free to reach out.</p>
+    </div>
+
+    <!-- AVAILABILITY BANNER -->
+    <div class="avail-banner reveal">
+      <div class="avail-dot"></div>
+      <p class="avail-text">
+        <strong>Open to opportunities</strong> - Looking for game developer,
+        gameplay programmer, or junior developer roles in Ottawa or remote.
+      </p>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="sec-block reveal">
+      <div class="sec-head" style="margin-bottom: 1.25rem;">
+        <span class="sec-num">01</span>
+        <span class="sec-line"></span>
+        <span class="sec-title">Reach Out</span>
+      </div>
+      <div class="contact-grid">
+        <a href="mailto:aly.embabyy@gmail.com" class="contact-card reveal">
+          <span class="c-symbol" aria-hidden="true">@</span>
+          <div class="c-platform">Email</div>
+          <div class="c-value">aly.embabyy@gmail.com</div>
+          <div class="c-sub">Best way to reach me</div>
+        </a>
+        <a href="https://github.com/aly44" target="_blank" class="contact-card reveal">
+          <span class="c-symbol" aria-hidden="true">&lt;/&gt;</span>
+          <div class="c-platform">GitHub</div>
+          <div class="c-value">github.com/aly44</div>
+          <div class="c-sub">Code &amp; projects</div>
+        </a>
+        <a href="https://www.linkedin.com/in/aly-embaby-90498133b/" target="_blank" class="contact-card reveal">
+          <span class="c-symbol" aria-hidden="true">in</span>
+          <div class="c-platform">LinkedIn</div>
+          <div class="c-value">aly-embaby</div>
+          <div class="c-sub">Professional profile</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- RESUME -->
+    <div class="sec-block reveal">
+      <div class="sec-head" style="margin-bottom: 1.25rem;">
+        <span class="sec-num">02</span>
+        <span class="sec-line"></span>
+        <span class="sec-title">Resume</span>
+      </div>
+      <div class="resume-box">
+        <span class="r-overline">Download</span>
+        <h2>Want the full picture?</h2>
+        <p>Download my resume for a complete overview of experience, education, and skills.</p>
+        <a href="Aly_Embaby_Resume.pdf" target="_blank" rel="noopener" class="btn btn-cyan">&#8599; View Resume (PDF)</a>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>Aly Embaby &nbsp;&middot;&nbsp; Game Developer &nbsp;&middot;&nbsp; Ottawa, ON &nbsp;&middot;&nbsp; 2026</p>
+  </footer>
+
+  <div id="copy-toast">&#10003; Email copied!</div>
+
+  <script src="bg.js"></script>
+  <script src="secret.js"></script>
+  <script>
+
+    // ── CUSTOM CURSOR ──
+    (function () {
+      const cur = document.getElementById('cursor');
+      if (!cur) return;
+      let visible = false;
+      document.addEventListener('mousemove', e => {
+        cur.style.left = e.clientX + 'px';
+        cur.style.top  = e.clientY + 'px';
+        if (!visible) { cur.style.opacity = '1'; visible = true; }
+      });
+      document.addEventListener('mouseleave', () => { cur.style.opacity = '0'; visible = false; });
+      document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => cur.classList.add('hov'));
+        el.addEventListener('mouseleave', () => cur.classList.remove('hov'));
+      });
+    })();
+
+    // ── SCROLL PROGRESS BAR ──
+    (function () {
+      const bar = document.getElementById('scroll-progress');
+      if (!bar) return;
+      window.addEventListener('scroll', () => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (window.scrollY / max * 100) + '%';
+      }, { passive: true });
+    })();
+
+    // ── OVERLINE TYPING ──
+    (function () {
+      const el = document.getElementById('typed-overline');
+      if (!el) return;
+      const text = "Let's Talk";
+      let i = 0;
+      function type() {
+        if (i <= text.length) { el.textContent = text.slice(0, i++); setTimeout(type, 80); }
+      }
+      setTimeout(type, 300);
+    })();
+
+    // ── WATERMARK PARALLAX ──
+    (function () {
+      const wm = document.querySelector('.page-hero .watermark');
+      if (!wm) return;
+      document.addEventListener('mousemove', e => {
+        const dx = (e.clientX / window.innerWidth  - 0.5) * 18;
+        const dy = (e.clientY / window.innerHeight - 0.5) * 10;
+        wm.style.transform = `translateY(calc(-50% + ${dy}px)) translateX(${dx}px)`;
+      });
+    })();
+
+    // ── GLITCH ──
+    (function () {
+      const el = document.getElementById('glitch-heading');
+      if (!el) return;
+      function glitch() {
+        el.classList.add('glitching');
+        setTimeout(() => el.classList.remove('glitching'), 400);
+        setTimeout(glitch, 4000 + Math.random() * 5000);
+      }
+      setTimeout(glitch, 2000 + Math.random() * 2000);
+    })();
+
+    // ── COPY EMAIL ──
+    (function () {
+      const emailCard = document.querySelector('a[href^="mailto:"]');
+      const toast     = document.getElementById('copy-toast');
+      if (!emailCard || !toast) return;
+      emailCard.addEventListener('click', e => {
+        e.preventDefault();
+        navigator.clipboard.writeText('aly.embabyy@gmail.com').then(() => {
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 2200);
+        });
+      });
+    })();
+
+    // ── SCROLL REVEAL (contact cards stagger) ──
+    (function () {
+      let cardsSeen = 0;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const isCard = e.target.classList.contains('contact-card');
+          const delay  = isCard ? cardsSeen * 100 : 0;
+          if (isCard) cardsSeen++;
+          setTimeout(() => e.target.classList.add('revealed'), delay);
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    })();
+  </script>
+</body>
+</html>

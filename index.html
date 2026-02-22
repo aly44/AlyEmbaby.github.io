@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aly Embaby  - Game Developer</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── CUSTOM CURSOR (pointer devices only) ── */
+    @media (hover: hover) {
+      * { cursor: none !important; }
+    }
+    #cursor {
+      position: fixed; left: -100px; top: -100px;
+      width: 22px; height: 22px;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease-out, opacity 0.3s;
+      opacity: 0;
+    }
+    #cursor::before, #cursor::after {
+      content: ''; position: absolute;
+      background: rgba(0,212,255,0.8);
+    }
+    #cursor::before {
+      width: 100%; height: 1px;
+      top: 50%; left: 0; transform: translateY(-50%);
+    }
+    #cursor::after {
+      width: 1px; height: 100%;
+      left: 50%; top: 0; transform: translateX(-50%);
+    }
+    .cur-dot {
+      position: absolute; width: 3px; height: 3px;
+      background: var(--cyan); border-radius: 50%;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+    }
+    #cursor.hov {
+      transform: translate(-50%, -50%) scale(1.6);
+    }
+    #cursor.hov::before, #cursor.hov::after {
+      background: var(--cyan);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: calc(100vh - 58px);
+      display: flex; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: 5%; left: -10%;
+      width: 60%; height: 80%;
+      background: radial-gradient(ellipse, rgba(0,212,255,0.07) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative; z-index: 1;
+      max-width: 960px; margin: 0 auto;
+      padding: 4rem 2.5rem; width: 100%;
+      will-change: transform;
+      transition: transform 0.12s ease-out;
+    }
+    .hero-overline {
+      display: flex; align-items: center; gap: 1.5rem;
+      margin-bottom: 2rem; flex-wrap: wrap;
+    }
+    .hero-num {
+      font-family: var(--font-head);
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.14em; color: var(--cyan);
+    }
+    .hero-name {
+      font-family: var(--font-head);
+      font-size: clamp(4.5rem, 13vw, 9.5rem);
+      font-weight: 700; line-height: 0.88;
+      letter-spacing: -0.04em; margin-bottom: 2rem;
+    }
+    .hero-name span { display: block; }
+    .hero-name .accent {
+      color: var(--cyan);
+      text-shadow: 0 0 80px rgba(0,212,255,0.22);
+      position: relative;
+    }
+
+    /* ── GLITCH ── */
+    .hero-name .accent.glitching {
+      animation: glitch-base 0.38s steps(1) forwards;
+    }
+    .hero-name .accent.glitching::before,
+    .hero-name .accent.glitching::after {
+      content: attr(data-text);
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    .hero-name .accent.glitching::before {
+      color: #ff2d78;
+      animation: glitch-a 0.38s steps(2) forwards;
+      clip-path: polygon(0 18%, 100% 18%, 100% 44%, 0 44%);
+    }
+    .hero-name .accent.glitching::after {
+      color: var(--cyan); opacity: 0.8;
+      animation: glitch-b 0.38s steps(2) forwards;
+      clip-path: polygon(0 58%, 100% 58%, 100% 82%, 0 82%);
+    }
+    @keyframes glitch-base {
+      0%  { transform: translateX(0); }
+      25% { transform: translateX(-5px) skewX(-1deg); }
+      75% { transform: translateX(4px); }
+      100%{ transform: translateX(0); }
+    }
+    @keyframes glitch-a {
+      0%  { transform: translateX(-10px); opacity: 0.9; }
+      50% { transform: translateX(7px); }
+      100%{ transform: translateX(-2px); opacity: 0; }
+    }
+    @keyframes glitch-b {
+      0%  { transform: translateX(10px); opacity: 0.8; }
+      50% { transform: translateX(-6px); }
+      100%{ transform: translateX(2px); opacity: 0; }
+    }
+
+    .hero-desc {
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 480px; margin-bottom: 2.5rem; line-height: 1.75;
+    }
+    .hero-desc strong { color: var(--text); font-weight: 500; }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* ── TYPING ROLE ── */
+    .hero-role-wrap {
+      font-family: var(--font-head);
+      font-size: clamp(0.85rem, 2vw, 1.1rem);
+      font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--cyan);
+      margin-bottom: 1.5rem; min-height: 1.8em;
+      display: flex; align-items: center;
+    }
+    .role-cursor {
+      display: inline-block; width: 2px; height: 1em;
+      background: var(--cyan); margin-left: 2px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; } 50% { opacity: 0; }
+    }
+
+    /* ── ENTRANCE ANIMATIONS ── */
+    .hero-anim {
+      opacity: 0;
+      animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── PARTICLE CANVAS ── */
+    #hero-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      z-index: 0; pointer-events: none;
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .home-section {
+      max-width: 960px; margin: 0 auto;
+      padding: 5rem 2.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── TECH STRIP ── */
+    .tech-list {
+      display: flex; flex-wrap: wrap; gap: 0.75rem;
+      margin-top: 2rem;
+    }
+    .tech-pill {
+      font-family: var(--font-head);
+      font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text); background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem; border-radius: 4px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .tech-pill:hover { border-color: var(--cyan); color: var(--cyan); }
+    .tech-pill.primary {
+      color: var(--cyan); background: var(--cyan-dim);
+      border-color: rgba(0,212,255,0.2);
+    }
+
+    /* ── FEATURED PROJECTS ── */
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem; margin-top: 2rem;
+    }
+    @media (max-width: 860px) { .featured-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 560px) { .featured-grid { grid-template-columns: 1fr; } }
+
+    .feat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px; overflow: hidden;
+      display: flex; flex-direction: column;
+      position: relative;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.45s cubic-bezier(0.16,1,0.3,1);
+    }
+    .feat-card:hover {
+      border-color: rgba(0,212,255,0.35);
+      box-shadow: 0 0 36px rgba(0,212,255,0.06);
+      text-decoration: none;
+    }
+    .card-shine {
+      position: absolute; inset: 0; border-radius: 6px;
+      pointer-events: none; z-index: 3;
+      opacity: 0; transition: opacity 0.3s;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.06) 0%, transparent 60%);
+    }
+    .feat-img {
+      width: 100%; height: 160px;
+      display: flex; align-items: center; justify-content: center;
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .feat-img.unity   { background: linear-gradient(145deg, #090f1c 0%, #0c1828 100%); }
+    .feat-img.cpp     { background: linear-gradient(145deg, #090f1c 0%, #091a0e 100%); }
+    .feat-img.unreal  { background: linear-gradient(145deg, #090f1c 0%, #11091c 100%); }
+    .feat-img .f-icon { font-size: 2.5rem; opacity: 0.15; }
+    .feat-body { padding: 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+    .feat-engine {
+      font-family: var(--font-head);
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan);
+    }
+    .feat-title {
+      font-family: var(--font-head);
+      font-size: 0.95rem; font-weight: 700;
+      color: var(--text); line-height: 1.3;
+    }
+    .feat-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.6; margin-top: 0.1rem; }
+    .feat-link {
+      font-family: var(--font-head);
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.06em; color: var(--cyan);
+      margin-top: auto; padding-top: 0.75rem;
+    }
+    .view-all-row { margin-top: 1.75rem; display: flex; }
+
+    /* ── CONTACT CTA ── */
+    .cta-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px; padding: 3.5rem 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .cta-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+    }
+    .cta-box h2 {
+      font-family: var(--font-head);
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.75rem;
+    }
+    .cta-box p {
+      color: var(--muted); font-size: 1rem;
+      max-width: 440px; line-height: 1.7; margin-bottom: 2rem;
+    }
+    .cta-links { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    .cta-links .cta-alt {
+      font-family: var(--font-head);
+      font-size: 0.82rem; font-weight: 500;
+      letter-spacing: 0.04em; color: var(--muted);
+      transition: color 0.2s;
+    }
+    .cta-links .cta-alt:hover { color: var(--text); }
+
+    /* ── SCROLL PROGRESS BAR ── */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      z-index: 9998;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(0,212,255,0.5);
+    }
+
+    /* ── HERO DESC STRONG HOVER ── */
+    .hero-desc strong {
+      position: relative;
+      transition: color 0.2s;
+    }
+    .hero-desc strong::after {
+      content: '';
+      position: absolute; left: 0; bottom: -1px;
+      width: 100%; height: 1px;
+      background: var(--cyan);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 6px rgba(0,212,255,0.4);
+    }
+    .hero-desc strong:hover { color: var(--cyan); }
+    .hero-desc strong:hover::after { transform: scaleX(1); }
+
+    /* ── FEAT CARD CORNER BRACKETS ── */
+    .feat-card::before,
+    .feat-card::after {
+      content: '';
+      position: absolute;
+      width: 10px; height: 10px;
+      opacity: 0; z-index: 4;
+      transition: opacity 0.3s;
+    }
+    .feat-card::before {
+      top: 6px; left: 6px;
+      border-top: 1px solid var(--cyan);
+      border-left: 1px solid var(--cyan);
+    }
+    .feat-card::after {
+      bottom: 6px; right: 6px;
+      border-bottom: 1px solid var(--cyan);
+      border-right: 1px solid var(--cyan);
+    }
+    .feat-card:hover::before,
+    .feat-card:hover::after { opacity: 1; }
+
+    /* ── CTA GLOW PULSE ── */
+    @keyframes cta-breathe {
+      0%, 100% { box-shadow: 0 0 0px rgba(0,212,255,0); }
+      50%       { box-shadow: 0 0 40px rgba(0,212,255,0.07); }
+    }
+    .cta-box { animation: cta-breathe 4s ease-in-out infinite; }
+
+/* ── SCROLL INDICATOR ── */
+    .scroll-ind {
+      position: absolute; bottom: 2.5rem; left: 50%;
+      transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      z-index: 2; pointer-events: none;
+      transition: opacity 0.5s;
+    }
+    .scroll-ind.hide { opacity: 0; }
+    .scroll-chevron {
+      width: 14px; height: 14px;
+      border-right: 2px solid var(--cyan);
+      border-bottom: 2px solid var(--cyan);
+      transform: rotate(45deg);
+    }
+    .scroll-chevron:nth-child(1) { animation: chev 1.6s ease-in-out infinite 0s; }
+    .scroll-chevron:nth-child(2) { animation: chev 1.6s ease-in-out infinite 0.22s; }
+    .scroll-chevron:nth-child(3) { animation: chev 1.6s ease-in-out infinite 0.44s; }
+    @keyframes chev {
+      0%   { opacity: 0.15; transform: rotate(45deg) translate(0, 0); }
+      50%  { opacity: 1;    transform: rotate(45deg) translate(3px, 3px); }
+      100% { opacity: 0.15; transform: rotate(45deg) translate(0, 0); }
+    }
+
+    @media (max-width: 640px) {
+      .hero-inner { padding: 3rem 1.25rem; }
+      .home-section { padding: 3.5rem 1.25rem; }
+      .cta-box { padding: 2.5rem 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="scroll-progress"></div>
+  <div class="bg-glow" aria-hidden="true">
+    <div class="bg-blob b1"></div>
+    <div class="bg-blob b2"></div>
+    <div class="bg-blob b3"></div>
+  </div>
+
+  <canvas id="page-bg"></canvas>
+
+  <!-- Custom crosshair cursor -->
+  <div id="cursor"><div class="cur-dot"></div></div>
+
+  <nav>
+    <a href="index.html" class="logo">Aly<span>.</span></a>
+    <ul>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="Aly_Embaby_Resume.pdf" target="_blank" rel="noopener" class="nav-resume">Resume</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <canvas id="hero-bg"></canvas>
+    <div class="hero-inner">
+      <div class="hero-overline hero-anim" style="animation-delay:0.05s">
+        <span class="hero-num">01 / PORTFOLIO</span>
+      </div>
+      <h1 class="hero-name hero-anim" style="animation-delay:0.2s">
+        <span>Aly</span>
+        <span class="accent" id="glitch-name" data-text="Embaby.">Embaby.</span>
+      </h1>
+      <div class="hero-role-wrap hero-anim" style="animation-delay:0.35s">
+        <span id="typing-role"></span><span class="role-cursor"></span>
+      </div>
+      <p class="hero-desc hero-anim" style="animation-delay:0.5s">
+        Building immersive games with <strong>Unity</strong>, <strong>Unreal Engine 5</strong>,
+        <strong>C++</strong>, and <strong>C#</strong>. Algonquin College - Game Development.
+      </p>
+      <div class="hero-btns hero-anim" style="animation-delay:0.65s">
+        <a href="projects.html" class="btn btn-cyan">View Work &rarr;</a>
+        <a href="contact.html" class="btn btn-outline">Get in Touch</a>
+      </div>
+    </div>
+    <div class="scroll-ind hero-anim" style="animation-delay:1s">
+      <div class="scroll-chevron"></div>
+      <div class="scroll-chevron"></div>
+      <div class="scroll-chevron"></div>
+    </div>
+  </section>
+
+  <!-- ── WHAT I BUILD WITH ── -->
+  <div class="home-section reveal">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <span class="sec-line"></span>
+      <span class="sec-title">What I Build With</span>
+    </div>
+    <div class="tech-list">
+      <span class="tech-pill primary">Unity</span>
+      <span class="tech-pill primary">Unreal Engine 5</span>
+      <span class="tech-pill primary">C++</span>
+      <span class="tech-pill primary">C#</span>
+      <span class="tech-pill">Blueprints</span>
+      <span class="tech-pill">GLSL / OpenGL</span>
+      <span class="tech-pill">UI Toolkit</span>
+      <span class="tech-pill">GAS</span>
+      <span class="tech-pill">3D MAX</span>
+      <span class="tech-pill">Photoshop</span>
+      <span class="tech-pill">Git</span>
+      <span class="tech-pill">Jira</span>
+    </div>
+  </div>
+
+  <!-- ── FEATURED WORK ── -->
+  <div class="home-section reveal">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <span class="sec-line"></span>
+      <span class="sec-title">Featured Work</span>
+    </div>
+    <div class="featured-grid">
+
+      <a href="projects.html#going-once" class="feat-card">
+        <div class="card-shine"></div>
+        <div class="feat-img unity" style="position:relative;"><img src="Going%20Once!/Screenshot_1.png" alt="Going Once!" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" /></div>
+        <div class="feat-body">
+          <span class="feat-engine">Unity</span>
+          <div class="feat-title">Going Once!</div>
+          <div class="feat-desc">Capstone project  - full UI framework, minigames, and achievements in an 11-person team.</div>
+          <span class="feat-link">View project &rarr;</span>
+        </div>
+      </a>
+
+      <a href="projects.html#mario-games" class="feat-card">
+        <div class="card-shine"></div>
+        <div class="feat-img unity" style="position:relative;"><img src="Mario/Screenshot_1.png" alt="Mario Games" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" /></div>
+        <div class="feat-body">
+          <span class="feat-engine">Unity &amp; Unreal</span>
+          <div class="feat-title">Mario Games</div>
+          <div class="feat-desc">Immersive levels with state-driven enemy AI, multi-phase bosses, and dynamic mechanics.</div>
+          <span class="feat-link">View project &rarr;</span>
+        </div>
+      </a>
+
+      <a href="projects.html#arcade-minigames" class="feat-card">
+        <div class="card-shine"></div>
+        <div class="feat-img unity" style="position:relative;"><img src="Arcade/Screenshot_1.png" alt="Arcade Minigames" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" /></div>
+        <div class="feat-body">
+          <span class="feat-engine">Unity</span>
+          <div class="feat-title">Arcade Minigames</div>
+          <div class="feat-desc">12 arcade minigames with UI Toolkit styling, a central hub, and persistent high scores.</div>
+          <span class="feat-link">View project &rarr;</span>
+        </div>
+      </a>
+
+    </div>
+    <div class="view-all-row">
+      <a href="projects.html" class="btn btn-outline">See All Projects &rarr;</a>
+    </div>
+  </div>
+
+  <!-- ── CONTACT CTA ── -->
+  <div class="home-section reveal">
+    <div class="cta-box">
+      <h2>Let's work together.</h2>
+      <p>
+        Graduating in June 2026 and actively looking for game developer
+        or junior developer roles. Open to Ottawa-based and remote opportunities.
+      </p>
+      <div class="cta-links">
+        <a href="contact.html" class="btn btn-cyan">Get in Touch</a>
+        <a href="Aly_Embaby_Resume.pdf" target="_blank" rel="noopener" class="cta-alt">&#8599; View Resume</a>
+        <a href="https://github.com/aly44" target="_blank" class="cta-alt">GitHub &nearr;</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Aly Embaby &nbsp;&middot;&nbsp; Game Developer &nbsp;&middot;&nbsp; Ottawa, ON &nbsp;&middot;&nbsp; 2026</p>
+  </footer>
+
+  <script>
+    // ── CUSTOM CURSOR ──
+    (function () {
+      const cur = document.getElementById('cursor');
+      if (!cur) return;
+      let visible = false;
+
+      document.addEventListener('mousemove', e => {
+        cur.style.left = e.clientX + 'px';
+        cur.style.top  = e.clientY  + 'px';
+        if (!visible) { cur.style.opacity = '1'; visible = true; }
+      });
+      document.addEventListener('mouseleave', () => {
+        cur.style.opacity = '0'; visible = false;
+      });
+
+      // Scale up on interactive elements
+      document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => cur.classList.add('hov'));
+        el.addEventListener('mouseleave', () => cur.classList.remove('hov'));
+      });
+    })();
+
+    // ── PARTICLE BACKGROUND ──
+    let ptsList = null;
+    (function () {
+      const canvas = document.getElementById('hero-bg');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const hero = canvas.parentElement;
+      let W, H, pts = [];
+
+      function resize() {
+        W = canvas.width  = hero ? hero.offsetWidth  : window.innerWidth;
+        H = canvas.height = hero ? hero.offsetHeight : window.innerHeight;
+      }
+
+      function makePt() {
+        return {
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.2,
+          vy: (Math.random() - 0.5) * 0.2,
+          r:  Math.random() * 1.2 + 0.3
+        };
+      }
+
+      function frame() {
+        ctx.clearRect(0, 0, W, H);
+        const n = pts.length;
+        for (let i = 0; i < n; i++) {
+          const a = pts[i];
+          a.x += a.vx; a.y += a.vy;
+          if (a.x < 0) a.x = W; if (a.x > W) a.x = 0;
+          if (a.y < 0) a.y = H; if (a.y > H) a.y = 0;
+
+          // Connecting lines
+          for (let j = i + 1; j < n; j++) {
+            const b = pts[j];
+            const dx = a.x - b.x, dy = a.y - b.y;
+            const d  = Math.sqrt(dx * dx + dy * dy);
+            if (d < 130) {
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+              ctx.strokeStyle = `rgba(0,212,255,${0.09 * (1 - d / 130)})`;
+              ctx.lineWidth = 0.6; ctx.stroke();
+            }
+          }
+
+          // Dot
+          ctx.beginPath();
+          ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(0,212,255,0.22)';
+          ctx.fill();
+        }
+        requestAnimationFrame(frame);
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+      pts = Array.from({ length: 55 }, makePt);
+      ptsList = pts;
+      frame();
+    })();
+
+    // ── TYPEWRITER ROLE ──
+    (function () {
+      const el = document.getElementById('typing-role');
+      if (!el) return;
+      const roles = ['Game Developer', 'Gameplay Programmer', 'Systems Programmer'];
+      let ri = 0, ci = 0, deleting = false;
+
+      function tick() {
+        const word = roles[ri];
+        if (deleting) {
+          ci--;
+          el.textContent = word.slice(0, ci);
+          if (ci === 0) { deleting = false; ri = (ri + 1) % roles.length; setTimeout(tick, 380); return; }
+          setTimeout(tick, 38);
+        } else {
+          ci++;
+          el.textContent = word.slice(0, ci);
+          if (ci === word.length) { deleting = true; setTimeout(tick, 2200); return; }
+          setTimeout(tick, 75);
+        }
+      }
+      setTimeout(tick, 950);
+    })();
+
+    // ── MOUSE PARALLAX ──
+    (function () {
+      const hero  = document.querySelector('.hero');
+      const inner = document.querySelector('.hero-inner');
+      if (!hero || !inner) return;
+      hero.addEventListener('mousemove', e => {
+        const r  = hero.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width  / 2)) / r.width;
+        const dy = (e.clientY - (r.top  + r.height / 2)) / r.height;
+        inner.style.transform = `translate(${dx * 14}px, ${dy * 8}px)`;
+      });
+      hero.addEventListener('mouseleave', () => { inner.style.transform = ''; });
+    })();
+
+    // ── GLITCH EFFECT ──
+    (function () {
+      const el = document.getElementById('glitch-name');
+      if (!el) return;
+      function doGlitch() {
+        el.classList.add('glitching');
+        setTimeout(() => el.classList.remove('glitching'), 420);
+        setTimeout(doGlitch, 4000 + Math.random() * 7000);
+      }
+      setTimeout(doGlitch, 3500);
+    })();
+
+    // ── CARD TILT ──
+    (function () {
+      document.querySelectorAll('.feat-card').forEach(card => {
+        const shine = card.querySelector('.card-shine');
+        card.addEventListener('mousemove', e => {
+          const r = card.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width  - 0.5;
+          const y = (e.clientY - r.top)  / r.height - 0.5;
+          card.style.transition = 'border-color 0.25s, box-shadow 0.25s, transform 0.08s ease-out';
+          card.style.transform  = `perspective(700px) rotateY(${x * 10}deg) rotateX(${-y * 7}deg) scale3d(1.02,1.02,1.02)`;
+          if (shine) {
+            shine.style.opacity = '1';
+            shine.style.background = `radial-gradient(circle at ${(x+0.5)*100}% ${(y+0.5)*100}%, rgba(255,255,255,0.07) 0%, transparent 60%)`;
+          }
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transition = 'border-color 0.25s, box-shadow 0.25s, transform 0.5s cubic-bezier(0.16,1,0.3,1)';
+          card.style.transform  = '';
+          if (shine) shine.style.opacity = '0';
+        });
+      });
+    })();
+
+    // ── SCROLL REVEAL ──
+    (function () {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    })();
+
+    // ── SCROLL PROGRESS BAR ──
+    (function () {
+      const bar = document.getElementById('scroll-progress');
+      if (!bar) return;
+      window.addEventListener('scroll', () => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (window.scrollY / max * 100) + '%';
+      }, { passive: true });
+    })();
+
+    // ── SCROLL INDICATOR ──
+    (function () {
+      const ind = document.querySelector('.scroll-ind');
+      if (!ind) return;
+      // Remove hero-anim after it completes so animation fill doesn't block opacity changes
+      setTimeout(() => ind.classList.remove('hero-anim'), 2000);
+      window.addEventListener('scroll', () => {
+        ind.classList.toggle('hide', window.scrollY > 80);
+      }, { passive: true });
+    })();
+
+  </script>
+  <script src="bg.js"></script>
+  <script src="secret.js"></script>
+
+</body>
+</html>

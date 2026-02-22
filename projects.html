@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects - Aly Embaby</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── CUSTOM CURSOR ── */
+    @media (hover: hover) { * { cursor: none !important; } }
+    #cursor {
+      position: fixed; left: -100px; top: -100px;
+      width: 22px; height: 22px;
+      pointer-events: none; z-index: 10001;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease-out, opacity 0.3s;
+      opacity: 0;
+    }
+    #cursor::before, #cursor::after {
+      content: ''; position: absolute;
+      background: rgba(0,212,255,0.8);
+    }
+    #cursor::before {
+      width: 100%; height: 1px;
+      top: 50%; left: 0; transform: translateY(-50%);
+    }
+    #cursor::after {
+      width: 1px; height: 100%;
+      left: 50%; top: 0; transform: translateX(-50%);
+    }
+    .cur-dot {
+      position: absolute; width: 3px; height: 3px;
+      background: var(--cyan); border-radius: 50%;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+    }
+    #cursor.hov { transform: translate(-50%, -50%) scale(1.6); }
+    #cursor.hov::before, #cursor.hov::after { background: var(--cyan); }
+
+    /* ── SCROLL PROGRESS BAR ── */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      z-index: 9998;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(0,212,255,0.5);
+    }
+
+    /* ── PAGE HERO ── */
+    .page-hero { position: relative; overflow: hidden; }
+    .page-hero .watermark {
+      position: absolute;
+      top: 50%; right: -0.5rem;
+      transform: translateY(-50%);
+      font-family: var(--font-head);
+      font-size: clamp(5rem, 16vw, 10rem);
+      font-weight: 700; letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.025);
+      pointer-events: none; user-select: none;
+      line-height: 1;
+    }
+    .hero-anim {
+      opacity: 0;
+      animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── GLITCH ON HEADING SPAN ── */
+    #glitch-heading {
+      position: relative; display: inline-block;
+    }
+    #glitch-heading.glitching {
+      animation: glitch-base 0.38s steps(1) forwards;
+    }
+    #glitch-heading.glitching::before,
+    #glitch-heading.glitching::after {
+      content: attr(data-text);
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    #glitch-heading.glitching::before {
+      color: #ff2d78;
+      animation: glitch-a 0.38s steps(2) forwards;
+      clip-path: polygon(0 18%, 100% 18%, 100% 44%, 0 44%);
+    }
+    #glitch-heading.glitching::after {
+      color: var(--cyan); opacity: 0.8;
+      animation: glitch-b 0.38s steps(2) forwards;
+      clip-path: polygon(0 58%, 100% 58%, 100% 82%, 0 82%);
+    }
+    @keyframes glitch-base {
+      0%  { transform: translateX(0); }
+      25% { transform: translateX(-5px) skewX(-1deg); }
+      75% { transform: translateX(4px); }
+      100%{ transform: translateX(0); }
+    }
+    @keyframes glitch-a {
+      0%  { transform: translateX(-10px); opacity: 0.9; }
+      50% { transform: translateX(7px); }
+      100%{ transform: translateX(-2px); opacity: 0; }
+    }
+    @keyframes glitch-b {
+      0%  { transform: translateX(10px); opacity: 0.8; }
+      50% { transform: translateX(-6px); }
+      100%{ transform: translateX(2px); opacity: 0; }
+    }
+
+    /* ── LIGHTBOX ── */
+    #lightbox {
+      position: fixed; inset: 0;
+      background: rgba(6,6,10,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 10000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    #lightbox.open { opacity: 1; pointer-events: all; }
+    #lightbox img {
+      max-width: 90vw; max-height: 88vh;
+      object-fit: contain; border-radius: 6px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,212,255,0.12);
+      transform: scale(0.94);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #lightbox.open img { transform: scale(1); }
+    #lightbox-close {
+      position: absolute; top: 1.25rem; right: 1.5rem;
+      font-family: var(--font-head);
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); background: none; border: none;
+      cursor: pointer; transition: color 0.2s;
+      padding: 0.5rem;
+    }
+    #lightbox-close:hover { color: var(--cyan); }
+    .lb-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-size: 2rem; line-height: 1;
+      color: var(--muted); background: rgba(6,6,10,0.6);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 50%; width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: color 0.2s, border-color 0.2s;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      user-select: none;
+    }
+    .lb-arrow:hover { color: var(--cyan); border-color: rgba(0,212,255,0.3); }
+    #lb-prev { left: 1.5rem; }
+    #lb-next { right: 1.5rem; }
+    .lb-counter {
+      position: absolute; bottom: 1.5rem; right: 1.5rem;
+      font-family: var(--font-head);
+      font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.1em; color: var(--muted2);
+    }
+    #lightbox-caption {
+      position: absolute; bottom: 1.5rem;
+      font-family: var(--font-head);
+      font-size: 0.7rem; letter-spacing: 0.08em;
+      color: var(--muted2); text-transform: uppercase;
+    }
+    .hero-meta {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .hero-meta-item {
+      font-family: var(--font-head);
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted2);
+    }
+    .hero-meta-item span { color: var(--cyan); }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .filter-btn {
+      font-family: var(--font-head);
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.38rem 1rem; border-radius: 3px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .filter-btn:hover { color: var(--text); border-color: rgba(0,212,255,0.2); }
+    .filter-btn.active {
+      color: var(--cyan);
+      border-color: rgba(0,212,255,0.35);
+      background: var(--cyan-dim);
+    }
+
+    /* ── SINGLE-COLUMN STACK ── */
+    .projects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .proj-card {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s, opacity 0.3s;
+      scroll-margin-top: 15rem;
+    }
+    .proj-card:hover {
+      border-color: rgba(0,212,255,0.28);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(0,212,255,0.06);
+    }
+    .proj-card.filtering-out {
+      opacity: 0;
+      transform: scale(0.97);
+      pointer-events: none;
+    }
+
+    /* ── MAIN IMAGE SLOT ── */
+    .proj-main-img {
+      width: 100%; height: 360px;
+      position: relative; overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .proj-card.featured .proj-main-img { height: 420px; }
+
+    .proj-main-img img,
+    .proj-main-img video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .proj-main-img video {
+      object-fit: contain;
+      background: #06060a;
+    }
+
+    /* Shimmer overlay on hover */
+    .proj-main-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(0,212,255,0.07) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .proj-card:hover .proj-main-img::after { opacity: 1; }
+
+    /* Subtle type-based tint for placeholder state */
+    .proj-main-img.unity   { background: linear-gradient(145deg, #090f1c 0%, #0c1828 100%); }
+    .proj-main-img.unreal  { background: linear-gradient(145deg, #090f1c 0%, #11091c 100%); }
+    .proj-main-img.cpp     { background: linear-gradient(145deg, #090f1c 0%, #091a0e 100%); }
+    .proj-main-img.design  { background: linear-gradient(145deg, #090f1c 0%, #170a1e 100%); }
+
+    .proj-placeholder {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.5rem;
+      text-align: center; padding: 2rem;
+      pointer-events: none;
+    }
+    .proj-placeholder .p-icon { font-size: 2.8rem; opacity: 0.12; }
+    .proj-placeholder .p-name {
+      font-family: var(--font-head);
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 700; letter-spacing: -0.03em;
+      color: var(--text); opacity: 0.08;
+    }
+    .proj-placeholder .p-hint {
+      font-family: var(--font-head);
+      font-size: 0.62rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--muted2); opacity: 0.5;
+      margin-top: 0.25rem;
+      border: 1px dashed rgba(255,255,255,0.08);
+      padding: 0.3rem 0.9rem; border-radius: 3px;
+    }
+
+    /* ── THUMBNAIL ROW ── */
+    .proj-thumbs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+    .proj-thumbs.five-col {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    .proj-thumbs.five-col .proj-thumb {
+      height: 80px;
+    }
+    .proj-thumb {
+      height: 100px;
+      background: var(--surface2);
+      border-right: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+      transition: background 0.2s;
+      cursor: default;
+    }
+    .proj-thumb:last-child { border-right: none; }
+    .proj-thumb:hover { background: rgba(0,212,255,0.03); }
+
+    .proj-thumb img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .proj-thumb:hover img { transform: scale(1.1); }
+
+    .thumb-add {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0.3rem;
+      color: var(--muted2); opacity: 0.35;
+    }
+    .thumb-add .t-plus { font-size: 1.4rem; font-weight: 200; line-height: 1; }
+    .thumb-add .t-label {
+      font-family: var(--font-head);
+      font-size: 0.58rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+
+    /* ── CARD BODY ── */
+    .proj-body {
+      padding: 1.75rem 2rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+
+    .proj-top {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 0.75rem; flex-wrap: wrap;
+    }
+
+    .proj-title {
+      font-family: var(--font-head);
+      font-size: 1.15rem; font-weight: 700; line-height: 1.2;
+      position: relative; display: inline-block;
+    }
+    .proj-title::after {
+      content: '';
+      position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--cyan);
+      transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .proj-card:hover .proj-title::after { width: 100%; }
+
+    .proj-engine {
+      font-family: var(--font-head);
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--cyan); background: var(--cyan-dim);
+      border: 1px solid rgba(0,212,255,0.15);
+      padding: 0.22rem 0.7rem; border-radius: 3px;
+      white-space: nowrap; height: fit-content;
+    }
+
+    .proj-desc {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 0.3rem;
+    }
+    .proj-desc li {
+      font-size: 0.875rem; color: var(--muted);
+      line-height: 1.65; padding-left: 1rem; position: relative;
+    }
+    .proj-desc li::before {
+      content: '›'; position: absolute; left: 0;
+      color: var(--cyan); font-weight: 700;
+    }
+
+    .proj-intro {
+      font-size: 0.9rem; color: var(--muted);
+      line-height: 1.7; margin: 0;
+    }
+
+    .proj-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 1rem; border-top: 1px solid var(--border);
+      gap: 0.75rem; flex-wrap: wrap;
+    }
+
+    .proj-links { display: flex; gap: 1.25rem; }
+    .proj-links a {
+      font-family: var(--font-head);
+      font-size: 0.78rem; font-weight: 500;
+      letter-spacing: 0.04em; color: var(--muted);
+      transition: color 0.2s;
+    }
+    .proj-links a:hover { color: var(--cyan); }
+
+    .proj-badge {
+      font-family: var(--font-head);
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--green); background: var(--green-dim);
+      border: 1px solid rgba(0,232,122,0.2);
+      padding: 0.2rem 0.6rem; border-radius: 3px;
+    }
+
+    /* ── HIDDEN CARD (filter) ── */
+    .proj-card.filtered-out { display: none; }
+
+    /* ── CORNER BRACKETS (injected by JS) ── */
+    .card-frame {
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 5;
+    }
+    .card-frame::before {
+      content: '';
+      position: absolute; top: 10px; left: 10px;
+      width: 18px; height: 18px;
+      border-top: 1px solid rgba(0,212,255,0.3);
+      border-left: 1px solid rgba(0,212,255,0.3);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .card-frame::after {
+      content: '';
+      position: absolute; bottom: 10px; right: 10px;
+      width: 18px; height: 18px;
+      border-bottom: 1px solid rgba(0,212,255,0.3);
+      border-right: 1px solid rgba(0,212,255,0.3);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .proj-card:hover .card-frame::before,
+    .proj-card:hover .card-frame::after { opacity: 1; }
+
+    /* ── CARD INDEX WATERMARK (injected by JS) ── */
+    .proj-num {
+      position: absolute; bottom: 1.5rem; right: 1.75rem;
+      font-family: var(--font-head);
+      font-size: 5.5rem; font-weight: 700; letter-spacing: -0.06em;
+      color: rgba(255,255,255,0.03); line-height: 1;
+      pointer-events: none; user-select: none; z-index: 0;
+    }
+
+    /* ── CAPSTONE PULSE BAR (injected by JS) ── */
+    .capstone-pulse {
+      position: absolute; top: 0; left: 0; bottom: 0;
+      width: 2px; background: var(--cyan);
+      pointer-events: none; z-index: 6;
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 6px rgba(0,212,255,0.3); opacity: 0.7; }
+      50%       { box-shadow: 0 0 22px rgba(0,212,255,0.7); opacity: 1; }
+    }
+
+    /* ── TAG HOVER (clickable) ── */
+    .tags span { cursor: pointer; transition: opacity 0.2s; }
+    .tags span:hover { opacity: 0.7; }
+
+    /* ── FILTER COUNT BADGES ── */
+    .f-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      min-width: 16px; height: 16px; padding: 0 4px;
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      border-radius: 8px; font-size: 0.58rem; margin-left: 0.35rem;
+      color: var(--muted2); vertical-align: middle; line-height: 1;
+    }
+    .filter-btn.active .f-count {
+      background: rgba(0,212,255,0.12); border-color: rgba(0,212,255,0.25);
+      color: var(--cyan);
+    }
+
+    /* ── BACK TO TOP ── */
+    #back-top {
+      position: fixed; bottom: 2rem; right: 2rem;
+      width: 38px; height: 38px;
+      background: var(--surface); border: 1px solid rgba(0,212,255,0.22);
+      border-radius: 50%; color: var(--cyan);
+      font-size: 1.1rem; font-weight: 300;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 200;
+      opacity: 0; transform: translateY(8px); pointer-events: none;
+      transition: opacity 0.3s, transform 0.3s, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    #back-top.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+    #back-top:hover {
+      background: var(--cyan-dim); border-color: rgba(0,212,255,0.5);
+      box-shadow: 0 0 18px rgba(0,212,255,0.18);
+    }
+
+    /* ── SIDE PROJECT NAV DOTS ── */
+    #proj-nav {
+      position: fixed; right: 1.25rem; top: 50%;
+      transform: translateY(-50%);
+      display: flex; flex-direction: column; gap: 0.6rem;
+      z-index: 150; pointer-events: none;
+    }
+    .pn-dot {
+      position: relative;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--muted2);
+      cursor: pointer; pointer-events: all;
+      opacity: 0.4;
+      transition: background 0.25s, transform 0.25s, opacity 0.25s, box-shadow 0.25s;
+    }
+    .pn-dot::before {
+      content: attr(data-title);
+      position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%);
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); font-family: var(--font-head);
+      font-size: 0.65rem; letter-spacing: 0.03em;
+      padding: 0.22rem 0.6rem; border-radius: 3px;
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .pn-dot:hover { opacity: 0.8; }
+    .pn-dot:hover::before { opacity: 1; }
+    .pn-dot.active {
+      background: var(--cyan); opacity: 1;
+      transform: scale(1.6);
+      box-shadow: 0 0 8px rgba(0,212,255,0.5);
+    }
+    .pn-dot.dot-hidden { opacity: 0.1; cursor: default; }
+    .pn-dot.dot-hidden::before { display: none; }
+    @media (max-width: 900px) { #proj-nav { display: none; } }
+
+    @media (max-width: 640px) {
+      .proj-main-img { height: 240px; }
+      .proj-card.featured .proj-main-img { height: 280px; }
+      .proj-thumb { height: 75px; }
+      .proj-body { padding: 1.25rem; }
+      .filter-bar { gap: 0.4rem; }
+      .filter-btn { font-size: 0.65rem; padding: 0.32rem 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="scroll-progress"></div>
+  <div id="cursor"><div class="cur-dot"></div></div>
+
+  <canvas id="page-bg"></canvas>
+
+  <div class="bg-glow" aria-hidden="true">
+    <div class="bg-blob b1"></div>
+    <div class="bg-blob b2"></div>
+    <div class="bg-blob b3"></div>
+  </div>
+
+  <nav>
+    <a href="index.html" class="logo">Aly<span>.</span></a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="Aly_Embaby_Resume.pdf" target="_blank" rel="noopener" class="nav-resume">Resume</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+
+    <div class="page-hero">
+      <span class="watermark" aria-hidden="true">WORK</span>
+      <span class="overline hero-anim" id="typed-overline" style="animation-delay:0.1s"></span>
+      <h1 class="hero-anim" style="animation-delay:0.2s"><span id="glitch-heading" data-text="Projects.">Projects.</span></h1>
+      <p class="hero-anim" style="animation-delay:0.35s; color:var(--muted);">Games, systems, and design work built at Algonquin College and beyond.</p>
+      <div class="hero-meta hero-anim" style="animation-delay:0.5s">
+        <span class="hero-meta-item"><span id="proj-count">0</span> Projects</span>
+        <span class="hero-meta-item">Unity &nbsp;&middot;&nbsp; Unreal &nbsp;&middot;&nbsp; C++ &nbsp;&middot;&nbsp; Design</span>
+      </div>
+    </div>
+
+    <div class="filter-bar reveal">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="unity">Unity</button>
+      <button class="filter-btn" data-filter="unreal">Unreal</button>
+      <button class="filter-btn" data-filter="cpp">C++</button>
+      <button class="filter-btn" data-filter="design">Design</button>
+    </div>
+
+    <div class="projects-list">
+
+      <!-- ── GOING ONCE! ── -->
+      <div class="proj-card featured reveal" id="going-once" data-types="unity">
+        <div class="proj-main-img unity">
+          <video src="Going%20Once!/Trailer.mp4" alt="Going Once! gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <img src="Going%20Once!/Screenshot_1.png" alt="Going Once! screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Going%20Once!/Screenshot_2.png" alt="Going Once! screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Going%20Once!/Screenshot_3.png" alt="Going Once! screenshot 3" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Going Once! - Capstone Project</h2>
+            <span class="proj-engine">Unity</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">Programmer</span>
+            <span class="tag-cyan">UI Toolkit</span>
+            <span class="tag-purple">Minigames</span>
+            <span class="tag-purple">Achievements</span>
+            <span class="tag-purple">Tutorial</span>
+          </div>
+          <p class="proj-intro">A cozy art inspection and auction house simulator built with an 11-person team. Players inspect artwork, arrange their gallery, and run live auctions with quick time events.</p>
+          <ul class="proj-desc">
+            <li>Developed several of the tool minigames used during the art inspection phase.</li>
+            <li>Built reusable systems shared across all minigames including a base tool class and callable popup system.</li>
+            <li>Implemented the main menu, pause menu, settings, achievement system, and tutorial system.</li>
+            <li>Collaborated in an 11-person multidisciplinary team using Git and Jira.</li>
+            <li>Produced structured technical documentation including UML and sequence diagrams.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+              <a href="https://midnightoilgames.github.io/" target="_blank" rel="noopener">Capstone Website &nearr;</a>
+            </div>
+            <span class="proj-badge">&#11088; Capstone 2025&ndash;2026</span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── MARIO GAMES ── -->
+      <div class="proj-card reveal" id="mario-games" data-types="unity unreal">
+        <div class="proj-main-img unity">
+          <video src="Mario/Mario%20Porfolio%20Project.mp4" alt="Mario Games gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs five-col">
+          <div class="proj-thumb">
+            <img src="Mario/Screenshot_1.png" alt="Mario Games screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Mario/Screenshot_2.png" alt="Mario Games screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Mario/Screenshot_3.png" alt="Mario Games screenshot 3" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Mario/Screenshot_4.png" alt="Mario Games screenshot 4" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Mario/Screenshot_5.png" alt="Mario Games screenshot 5" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Mario Games</h2>
+            <span class="proj-engine">Unity &amp; Unreal</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">Level Design</span>
+            <span class="tag-cyan">Enemy AI</span>
+            <span class="tag-purple">Gameplay Systems</span>
+            <span class="tag-purple">C#</span>
+          </div>
+          <p class="proj-intro">A Mario-inspired platformer built in Unity featuring a full lava-themed level with 10+ enemy types, interactive hazards, and custom gameplay systems.</p>
+          <ul class="proj-desc">
+            <li>Designed and built a lava level with hazards like Podoboos, Roto Discs, Thwomps, and Spikes.</li>
+            <li>Programmed enemy behaviors - Dry Bones, Goombas, Piranha Plants, and the Donut Lift platform.</li>
+            <li>Implemented interactive systems: Question Mark blocks, hidden item boxes, coin-to-block toggle switch, and power-ups (One-Up, Flower Power).</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── PATH OF TRIALS ── -->
+      <div class="proj-card reveal" id="platformer" data-types="unreal design">
+        <div class="proj-main-img unreal">
+          <video src="SideScroller/SideScroller%20Project.mp4" alt="Path of Trials gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs five-col">
+          <div class="proj-thumb">
+            <img src="SideScroller/Screenshot_1.png" alt="Path of Trials screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="SideScroller/Screenshot_2.png" alt="Path of Trials screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="SideScroller/Screenshot_3.png" alt="Path of Trials screenshot 3" />
+          </div>
+          <div class="proj-thumb">
+            <img src="SideScroller/Screenshot_4.png" alt="Path of Trials screenshot 4" />
+          </div>
+          <div class="proj-thumb">
+            <img src="SideScroller/Screenshot_5.png" alt="Path of Trials screenshot 5" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Path of Trials</h2>
+            <span class="proj-engine">Unreal Engine 5</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">Level Design</span>
+            <span class="tag-cyan">Unreal Engine</span>
+            <span class="tag-purple">Documentation</span>
+          </div>
+          <p class="proj-intro">A 2D platformer level designed in Unreal Engine 5 with 12 interconnected rooms featuring platforming, combat, puzzles, and parkour challenges.</p>
+          <ul class="proj-desc">
+            <li>Designed 12 interconnected rooms with distinct challenges - platforming, combat, puzzles, and parkour.</li>
+            <li>Planned and tuned difficulty curve using a pacing chart across all rooms.</li>
+            <li>Ran playtests, collected feedback, and iterated - replaced a frustrating spike section with a more balanced design.</li>
+            <li>Produced full documentation: mini-map with legend, pacing chart, and playtest analysis.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ARCADE MINIGAMES ── -->
+      <div class="proj-card reveal" id="arcade-minigames" data-types="unity">
+        <div class="proj-main-img unity">
+          <video src="Arcade/Arcade%20Minigames%20Project.mp4" alt="Arcade Minigames gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs five-col">
+          <div class="proj-thumb">
+            <img src="Arcade/Screenshot_1.png" alt="Arcade Minigames screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Arcade/Screenshot_2.png" alt="Arcade Minigames screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Arcade/Screenshot_3.png" alt="Arcade Minigames screenshot 3" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Arcade/Screenshot_4.png" alt="Arcade Minigames screenshot 4" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Arcade/Screenshot_5.png" alt="Arcade Minigames screenshot 5" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Arcade Minigames</h2>
+            <span class="proj-engine">Unity</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C#</span>
+            <span class="tag-cyan">UI Toolkit</span>
+            <span class="tag-purple">12 Minigames</span>
+            <span class="tag-purple">High Scores</span>
+          </div>
+          <p class="proj-intro">A collection of arcade-style minigames built in Unity using UI Toolkit.</p>
+          <ul class="proj-desc">
+            <li>Built 12 arcade minigames in Unity with a central hub for navigation between games.</li>
+            <li>Designed per-game color themes using UI Toolkit (UXML/USS) with consistent styling across all screens.</li>
+            <li>Implemented persistent high score tracking for each game using PlayerPrefs.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── 2D STEALTH GAME ── -->
+      <div class="proj-card reveal" id="stealth-game" data-types="unity">
+        <div class="proj-main-img unity">
+          <video src="Stealth/Stealth%20Project.mp4" alt="2D Stealth Game gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs five-col">
+          <div class="proj-thumb">
+            <img src="Stealth/Screenshot_1.png" alt="2D Stealth Game screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Stealth/Screenshot_2.png" alt="2D Stealth Game screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Stealth/Screenshot_3.png" alt="2D Stealth Game screenshot 3" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Stealth/Screenshot_4.png" alt="2D Stealth Game screenshot 4" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Stealth/Screenshot_5.png" alt="2D Stealth Game screenshot 5" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">2D Stealth Game</h2>
+            <span class="proj-engine">Unity</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C#</span>
+            <span class="tag-cyan">Stealth</span>
+            <span class="tag-purple">Enemy AI</span>
+            <span class="tag-purple">Fog of War</span>
+          </div>
+          <p class="proj-intro">A top-down stealth game in Unity where players sneak past enemies using distractions and cover. Features enemy FOV cones, fog of war, and 3 levels with increasing difficulty.</p>
+          <ul class="proj-desc">
+            <li>Top-down 2D stealth game with enemy field-of-view detection and fog-of-war systems.</li>
+            <li>Implemented distraction mechanics for player interaction and strategic gameplay.</li>
+            <li>Built three playable levels with a main menu interface.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── 2D SURVIVAL GAME ── -->
+      <div class="proj-card reveal" data-types="cpp">
+        <div class="proj-main-img cpp">
+          <div class="proj-placeholder">
+            <span class="p-icon">&#9876;</span>
+            <span class="p-name">2D Survival Game</span>
+            <span class="p-hint">Screenshots coming soon</span>
+          </div>
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus"></span><span class="t-label">Coming Soon</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus"></span><span class="t-label">Coming Soon</span></div>
+          </div>
+          <div class="proj-thumb">
+            <div class="thumb-add"><span class="t-plus"></span><span class="t-label">Coming Soon</span></div>
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">2D Survival Game</h2>
+            <span class="proj-engine">C++</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C++</span>
+            <span class="tag-cyan">Enemy AI</span>
+            <span class="tag-purple">HUD</span>
+            <span class="tag-purple">Spawning</span>
+          </div>
+          <p class="proj-intro">A top-down survival game built in C++ with weapon leveling, enemy AI, and a HUD system.</p>
+          <ul class="proj-desc">
+            <li>Top-down game with player controls, weapon leveling, and HUD for stats.</li>
+            <li>Multi-hit weapon mechanics, enemy AI, and dynamic spawning systems.</li>
+            <li>Optimized through systematic debugging and performance tuning.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>Aly Embaby &nbsp;&middot;&nbsp; Game Developer &nbsp;&middot;&nbsp; Ottawa, ON &nbsp;&middot;&nbsp; 2026</p>
+  </footer>
+
+  <button id="back-top" aria-label="Back to top">↑</button>
+
+  <!-- ── LIGHTBOX ── -->
+  <div id="lightbox" role="dialog" aria-modal="true">
+    <button id="lightbox-close">&#215; Close</button>
+    <button class="lb-arrow" id="lb-prev" aria-label="Previous">&#8249;</button>
+    <img id="lightbox-img" src="" alt="" />
+    <button class="lb-arrow" id="lb-next" aria-label="Next">&#8250;</button>
+    <span id="lightbox-caption"></span>
+    <span class="lb-counter" id="lb-counter"></span>
+  </div>
+
+  <script src="bg.js"></script>
+  <script src="secret.js"></script>
+  <script>
+
+    // ── CUSTOM CURSOR ──
+    (function () {
+      const cur = document.getElementById('cursor');
+      if (!cur) return;
+      let visible = false;
+      document.addEventListener('mousemove', e => {
+        cur.style.left = e.clientX + 'px';
+        cur.style.top  = e.clientY + 'px';
+        if (!visible) { cur.style.opacity = '1'; visible = true; }
+      });
+      document.addEventListener('mouseleave', () => { cur.style.opacity = '0'; visible = false; });
+      document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => cur.classList.add('hov'));
+        el.addEventListener('mouseleave', () => cur.classList.remove('hov'));
+      });
+    })();
+
+    // ── SCROLL PROGRESS BAR ──
+    (function () {
+      const bar = document.getElementById('scroll-progress');
+      if (!bar) return;
+      window.addEventListener('scroll', () => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (window.scrollY / max * 100) + '%';
+      }, { passive: true });
+    })();
+
+    // ── OVERLINE TYPING ──
+    (function () {
+      const el = document.getElementById('typed-overline');
+      if (!el) return;
+      const text = 'My Work';
+      let i = 0;
+      function type() {
+        if (i <= text.length) {
+          el.textContent = text.slice(0, i);
+          i++;
+          setTimeout(type, 80);
+        }
+      }
+      setTimeout(type, 300);
+    })();
+
+    // ── WATERMARK PARALLAX ──
+    (function () {
+      const hero = document.querySelector('.page-hero');
+      const wm   = hero ? hero.querySelector('.watermark') : null;
+      if (!hero || !wm) return;
+      document.addEventListener('mousemove', e => {
+        const dx = (e.clientX / window.innerWidth  - 0.5) * 18;
+        const dy = (e.clientY / window.innerHeight - 0.5) * 10;
+        wm.style.transform = `translateY(calc(-50% + ${dy}px)) translateX(${dx}px)`;
+      });
+    })();
+
+    // ── FILTER (smooth transition) ──
+    (function () {
+      const btns     = document.querySelectorAll('.filter-btn');
+      const allCards = [...document.querySelectorAll('.proj-card')];
+
+      function filterCards(filter) {
+        allCards.forEach(card => {
+          const types = (card.dataset.types || '').split(' ');
+          const match = filter === 'all' || types.includes(filter);
+          const dot   = document.querySelector(`#proj-nav [data-target="${card.id}"]`);
+
+          if (match) {
+            card.classList.remove('filtered-out');
+            card.classList.add('revealed');
+            card.offsetHeight; // force reflow
+            card.classList.remove('filtering-out');
+            if (dot) dot.classList.remove('dot-hidden');
+          } else {
+            card.classList.add('filtering-out');
+            if (dot) dot.classList.add('dot-hidden');
+            setTimeout(() => {
+              if (card.classList.contains('filtering-out')) {
+                card.classList.add('filtered-out');
+              }
+            }, 320);
+          }
+        });
+      }
+
+      btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          btns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filterCards(btn.dataset.filter);
+        });
+      });
+    })();
+
+    // ── FILTER COUNT BADGES ──
+    (function () {
+      const allCards = [...document.querySelectorAll('.proj-card')];
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        const filter = btn.dataset.filter;
+        const count  = filter === 'all'
+          ? allCards.length
+          : allCards.filter(c => (c.dataset.types || '').split(' ').includes(filter)).length;
+        const label  = btn.textContent.trim();
+        btn.innerHTML = `${label}<span class="f-count">${count}</span>`;
+      });
+    })();
+
+    // ── COUNT-UP ──
+    (function () {
+      const el = document.getElementById('proj-count');
+      if (!el) return;
+      const target = 6;
+      let count = 0;
+      setTimeout(() => {
+        const iv = setInterval(() => {
+          count++;
+          el.textContent = count;
+          if (count >= target) clearInterval(iv);
+        }, 70);
+      }, 600);
+    })();
+
+    // ── CARD DECORATIONS (frames, index numbers, capstone pulse) ──
+    (function () {
+      document.querySelectorAll('.proj-card').forEach((card, i) => {
+        // Corner bracket frame
+        const frame = document.createElement('div');
+        frame.className = 'card-frame';
+        frame.setAttribute('aria-hidden', 'true');
+        card.appendChild(frame);
+
+        // Faint index watermark
+        const num = document.createElement('span');
+        num.className = 'proj-num';
+        num.setAttribute('aria-hidden', 'true');
+        num.textContent = String(i + 1).padStart(2, '0');
+        card.appendChild(num);
+
+        // Breathing glow bar for capstone
+        if (card.classList.contains('featured')) {
+          const pulse = document.createElement('div');
+          pulse.className = 'capstone-pulse';
+          pulse.setAttribute('aria-hidden', 'true');
+          card.appendChild(pulse);
+        }
+      });
+    })();
+
+    // ── TAG CLICK TO FILTER ──
+    (function () {
+      document.querySelectorAll('.tags span').forEach(tag => {
+        tag.addEventListener('click', () => {
+          const card = tag.closest('.proj-card');
+          if (!card) return;
+          const types = (card.dataset.types || '').split(' ');
+          const btn = document.querySelector(`.filter-btn[data-filter="${types[0]}"]`);
+          if (btn) btn.click();
+        });
+      });
+    })();
+
+    // ── GLITCH ──
+    (function () {
+      const el = document.getElementById('glitch-heading');
+      if (!el) return;
+      function glitch() {
+        el.classList.add('glitching');
+        setTimeout(() => el.classList.remove('glitching'), 400);
+        setTimeout(glitch, 4000 + Math.random() * 5000);
+      }
+      setTimeout(glitch, 2000 + Math.random() * 2000);
+    })();
+
+    // ── LIGHTBOX WITH GALLERY NAVIGATION ──
+    (function () {
+      const lb      = document.getElementById('lightbox');
+      const lbImg   = document.getElementById('lightbox-img');
+      const lbClose = document.getElementById('lightbox-close');
+      const lbCap   = document.getElementById('lightbox-caption');
+      const lbPrev  = document.getElementById('lb-prev');
+      const lbNext  = document.getElementById('lb-next');
+      const lbCount = document.getElementById('lb-counter');
+      if (!lb) return;
+
+      let gallery = [];   // array of {src, alt} for the current card
+      let galIdx  = 0;
+
+      function show(idx) {
+        galIdx = idx;
+        lbImg.src = gallery[idx].src;
+        lbImg.alt = gallery[idx].alt;
+        lbCap.textContent = gallery[idx].alt;
+        lbCount.textContent = (idx + 1) + ' / ' + gallery.length;
+        // hide arrows if only one image
+        const multi = gallery.length > 1;
+        lbPrev.style.display = multi ? '' : 'none';
+        lbNext.style.display = multi ? '' : 'none';
+        lbCount.style.display = multi ? '' : 'none';
+      }
+
+      function open(img) {
+        // gather all images from the same card
+        const card = img.closest('.proj-card');
+        const imgs = card
+          ? card.querySelectorAll('.proj-main-img img, .proj-thumb img')
+          : [img];
+        gallery = Array.from(imgs).map(i => ({ src: i.src, alt: i.alt }));
+        galIdx = gallery.findIndex(g => g.src === img.src);
+        if (galIdx < 0) galIdx = 0;
+        show(galIdx);
+        lb.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function close() {
+        lb.classList.remove('open');
+        document.body.style.overflow = '';
+        setTimeout(() => { lbImg.src = ''; }, 300);
+      }
+
+      function prev() { if (gallery.length > 1) show((galIdx - 1 + gallery.length) % gallery.length); }
+      function next() { if (gallery.length > 1) show((galIdx + 1) % gallery.length); }
+
+      // Clicking real images inside proj-main-img or proj-thumb
+      document.querySelectorAll('.proj-main-img img, .proj-thumb img').forEach(img => {
+        img.style.cursor = 'zoom-in';
+        img.addEventListener('click', e => { e.stopPropagation(); open(img); });
+      });
+
+      lbPrev.addEventListener('click', e => { e.stopPropagation(); prev(); });
+      lbNext.addEventListener('click', e => { e.stopPropagation(); next(); });
+      lbClose.addEventListener('click', close);
+      lb.addEventListener('click', e => { if (e.target === lb) close(); });
+      document.addEventListener('keydown', e => {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowLeft') prev();
+        if (e.key === 'ArrowRight') next();
+      });
+    })();
+
+    // ── SCROLL REVEAL (staggered for cards) ──
+    (function () {
+      let cardsSeen = 0;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const isCard = e.target.classList.contains('proj-card');
+          const delay  = isCard ? Math.min(cardsSeen * 80, 240) : 0;
+          if (isCard) cardsSeen++;
+          setTimeout(() => e.target.classList.add('revealed'), delay);
+          io.unobserve(e.target);
+        });
+      }, { threshold: 0.08 });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    })();
+
+    // ── BACK TO TOP ──
+    (function () {
+      const btn = document.getElementById('back-top');
+      if (!btn) return;
+      window.addEventListener('scroll', () => {
+        btn.classList.toggle('visible', window.scrollY > 500);
+      }, { passive: true });
+      btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    })();
+
+    // ── SIDE PROJECT NAV DOTS ──
+    (function () {
+      const cards = [...document.querySelectorAll('.proj-card')];
+      if (!cards.length) return;
+
+      // Ensure all cards have IDs
+      cards.forEach((card, i) => { if (!card.id) card.id = `proj-${i}`; });
+
+      // Build nav
+      const nav = document.createElement('nav');
+      nav.id = 'proj-nav';
+      nav.setAttribute('aria-label', 'Project navigation');
+
+      cards.forEach(card => {
+        const title = card.querySelector('.proj-title')?.textContent.trim() || '';
+        const dot   = document.createElement('div');
+        dot.className = 'pn-dot';
+        dot.dataset.target = card.id;
+        dot.dataset.title  = title;
+        dot.addEventListener('click', () => {
+          document.getElementById(card.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        nav.appendChild(dot);
+      });
+
+      document.body.appendChild(nav);
+
+      // Highlight active dot on scroll
+      const dotIo = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          const dot = nav.querySelector(`[data-target="${e.target.id}"]`);
+          if (dot) dot.classList.toggle('active', e.isIntersecting);
+        });
+      }, { threshold: 0.35 });
+      cards.forEach(card => dotIo.observe(card));
+    })();
+  </script>
+</body>
+</html>
