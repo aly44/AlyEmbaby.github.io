@@ -6,27 +6,169 @@
   <title>About — Aly Embaby</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* ── ABOUT INTRO ── */
+    /* ── CUSTOM CURSOR ── */
+    @media (hover: hover) { * { cursor: none !important; } }
+    #cursor {
+      position: fixed; left: -100px; top: -100px;
+      width: 22px; height: 22px;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease-out, opacity 0.3s;
+      opacity: 0;
+    }
+    #cursor::before, #cursor::after {
+      content: ''; position: absolute;
+      background: rgba(0,212,255,0.8);
+    }
+    #cursor::before {
+      width: 100%; height: 1px;
+      top: 50%; left: 0; transform: translateY(-50%);
+    }
+    #cursor::after {
+      width: 1px; height: 100%;
+      left: 50%; top: 0; transform: translateX(-50%);
+    }
+    .cur-dot {
+      position: absolute; width: 3px; height: 3px;
+      background: var(--cyan); border-radius: 50%;
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+    }
+    #cursor.hov { transform: translate(-50%, -50%) scale(1.6); }
+    #cursor.hov::before, #cursor.hov::after { background: var(--cyan); }
+
+    /* ── PAGE HERO OVERRIDES ── */
+    .page-hero {
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero .watermark {
+      position: absolute;
+      top: 50%; right: -0.5rem;
+      transform: translateY(-50%);
+      font-family: var(--font-head);
+      font-size: clamp(5rem, 16vw, 10rem);
+      font-weight: 700; letter-spacing: -0.04em;
+      color: rgba(255,255,255,0.025);
+      pointer-events: none; user-select: none;
+      line-height: 1;
+    }
+    .hero-anim {
+      opacity: 0;
+      animation: fadeUp 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── GLITCH ON HEADING SPAN ── */
+    #glitch-heading {
+      position: relative; display: inline-block;
+    }
+    #glitch-heading.glitching {
+      animation: glitch-base 0.38s steps(1) forwards;
+    }
+    #glitch-heading.glitching::before,
+    #glitch-heading.glitching::after {
+      content: attr(data-text);
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+    }
+    #glitch-heading.glitching::before {
+      color: #ff2d78;
+      animation: glitch-a 0.38s steps(2) forwards;
+      clip-path: polygon(0 18%, 100% 18%, 100% 44%, 0 44%);
+    }
+    #glitch-heading.glitching::after {
+      color: var(--cyan); opacity: 0.8;
+      animation: glitch-b 0.38s steps(2) forwards;
+      clip-path: polygon(0 58%, 100% 58%, 100% 82%, 0 82%);
+    }
+    @keyframes glitch-base {
+      0%  { transform: translateX(0); }
+      25% { transform: translateX(-5px) skewX(-1deg); }
+      75% { transform: translateX(4px); }
+      100%{ transform: translateX(0); }
+    }
+    @keyframes glitch-a {
+      0%  { transform: translateX(-10px); opacity: 0.9; }
+      50% { transform: translateX(7px); }
+      100%{ transform: translateX(-2px); opacity: 0; }
+    }
+    @keyframes glitch-b {
+      0%  { transform: translateX(10px); opacity: 0.8; }
+      50% { transform: translateX(-6px); }
+      100%{ transform: translateX(2px); opacity: 0; }
+    }
+
+    /* ── STATUS DOT ── */
+    .status-dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      margin-right: 0.45rem;
+      vertical-align: middle;
+      position: relative; top: -1px;
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--green); }
+      50%       { opacity: 0.4; box-shadow: 0 0 2px var(--green); }
+    }
+
+    /* ── SKILLS SCAN LINE ── */
+    .skills-table {
+      position: relative;
+    }
+    .skills-table .scan-line {
+      position: absolute;
+      left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,212,255,0.3), transparent);
+      pointer-events: none;
+      opacity: 0;
+      top: 0;
+    }
+
+    /* ── INTRO GRID ── */
     .about-grid {
       display: grid;
-      grid-template-columns: 1fr 250px;
+      grid-template-columns: 1fr 230px;
       gap: 3rem;
-      margin-bottom: 5rem;
+      align-items: start;
     }
-    @media (max-width: 680px) { .about-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) { .about-grid { grid-template-columns: 1fr; } }
 
     .about-text p {
-      color: var(--muted); font-size: 1rem;
-      line-height: 1.8; margin-bottom: 1rem;
+      font-size: 1rem; color: #a8a8c0;
+      line-height: 1.9; margin-bottom: 1.1rem;
     }
     .about-text p:last-child { margin-bottom: 0; }
     .about-text strong { color: var(--text); font-weight: 500; }
 
+    /* ── SLIDE FROM RIGHT ── */
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(28px);
+      transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal-right.revealed { opacity: 1; transform: translateX(0); }
+
+    /* ── INFO SIDEBAR ── */
     .info-box {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 6px; padding: 1.5rem;
-      height: fit-content;
+      position: relative; overflow: hidden;
+    }
+    .info-box::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
     }
     .info-box-title {
       font-family: var(--font-head);
@@ -35,59 +177,18 @@
       color: var(--cyan); margin-bottom: 1.25rem;
     }
     .info-row {
-      display: flex; flex-direction: column; gap: 0.08rem;
-      margin-bottom: 1rem;
+      display: flex; flex-direction: column; gap: 0.1rem;
+      margin-bottom: 1rem; padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
     }
-    .info-row:last-child { margin-bottom: 0; }
+    .info-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
     .info-lbl {
-      font-size: 0.65rem; color: var(--muted2);
+      font-size: 0.62rem; color: var(--muted2);
       font-family: var(--font-head);
       text-transform: uppercase; letter-spacing: 0.08em;
     }
-    .info-val { font-size: 0.88rem; color: var(--text); }
-
-    /* ── EXPERIENCE ── */
-    .exp-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--cyan);
-      border-radius: 0 6px 6px 0;
-      padding: 1.75rem 1.75rem 1.75rem 2rem;
-      transition: box-shadow 0.2s;
-    }
-    .exp-card:hover { box-shadow: -4px 0 24px rgba(0,212,255,0.08); }
-
-    .exp-header {
-      display: flex; justify-content: space-between;
-      align-items: flex-start; gap: 1rem; flex-wrap: wrap;
-      margin-bottom: 0.2rem;
-    }
-    .exp-title {
-      font-family: var(--font-head);
-      font-size: 1rem; font-weight: 700;
-    }
-    .exp-date {
-      font-family: var(--font-head);
-      font-size: 0.68rem; font-weight: 600;
-      letter-spacing: 0.08em;
-      color: var(--green); background: var(--green-dim);
-      border: 1px solid rgba(0,232,122,0.2);
-      padding: 0.2rem 0.65rem; border-radius: 3px;
-      white-space: nowrap;
-    }
-    .exp-company {
-      font-size: 0.88rem; color: var(--cyan);
-      margin-bottom: 1rem; font-weight: 500;
-    }
-    .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
-    .exp-bullets li {
-      font-size: 0.875rem; color: var(--muted);
-      line-height: 1.65; padding-left: 1rem; position: relative;
-    }
-    .exp-bullets li::before {
-      content: '›'; position: absolute; left: 0;
-      color: var(--cyan); font-weight: 700;
-    }
+    .info-val { font-size: 0.9rem; color: var(--text); font-weight: 500; }
+    .info-val.avail { color: var(--green); }
 
     /* ── EDUCATION ── */
     .edu-card {
@@ -96,7 +197,7 @@
       border-radius: 6px; padding: 1.75rem;
       position: relative; overflow: hidden;
     }
-    .edu-card::after {
+    .edu-card::before {
       content: '';
       position: absolute; top: 0; left: 0; right: 0; height: 2px;
       background: linear-gradient(90deg, var(--cyan), var(--purple));
@@ -110,35 +211,240 @@
       font-size: 0.875rem; color: var(--muted);
       margin-bottom: 1rem; line-height: 1.6;
     }
-    .edu-meta strong { color: var(--text); font-weight: 500; }
     .edu-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 
-    /* ── SKILLS ── */
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
-    }
-    .skill-group {
-      background: var(--surface);
+    /* ── SKILLS TABLE ── */
+    .skills-table {
+      display: flex; flex-direction: column;
       border: 1px solid var(--border);
-      border-radius: 6px; padding: 1.1rem 1.25rem;
-      transition: border-color 0.2s;
+      border-left: 2px solid var(--cyan);
+      border-radius: 0 6px 6px 0;
+      overflow: hidden;
     }
-    .skill-group:hover { border-color: rgba(255,255,255,0.12); }
-    .skill-group h4 {
+    .skill-row {
+      display: grid;
+      grid-template-columns: 145px 1fr;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+      opacity: 0;
+      transform: translateX(-16px);
+      transition: background 0.2s, opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    .skill-row.row-visible { opacity: 1; transform: translateX(0); }
+    .skill-row:last-child { border-bottom: none; }
+    .skill-row:hover { background: var(--surface2); }
+
+    .skill-cat {
       font-family: var(--font-head);
       font-size: 0.65rem; font-weight: 700;
       letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--cyan); margin-bottom: 0.75rem;
+      color: var(--cyan);
+      padding: 1rem 1.25rem;
+      border-right: 1px solid var(--border);
+      display: flex; align-items: center;
     }
-    .skill-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .skill-items {
+      padding: 1rem 1.25rem;
+      font-size: 0.875rem;
+      line-height: 1.7;
+      display: flex; align-items: center; flex-wrap: wrap;
+      gap: 0.15rem 0;
+    }
+    .skill-items span { color: var(--text); }
+    .skill-sep {
+      color: var(--muted2);
+      margin: 0 0.6rem;
+      font-size: 0.7rem;
+    }
+
+    @media (max-width: 560px) {
+      .skill-row { grid-template-columns: 1fr; }
+      .skill-cat { border-right: none; border-bottom: 1px solid var(--border); padding: 0.75rem 1rem; }
+      .skill-items { padding: 0.75rem 1rem; }
+    }
+
+    /* ── INTEREST CARD STAGGER ── */
+    .interest-card {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.6s cubic-bezier(0.16,1,0.3,1),
+                  border-color 0.25s, box-shadow 0.25s;
+    }
+    .interest-card.card-visible { opacity: 1; transform: translateY(0); }
+
+    /* ── INTERESTS ── */
+    .interests-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 640px) { .interests-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 420px) { .interests-grid { grid-template-columns: 1fr; } }
+
+    .interest-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px; padding: 1.4rem 1.25rem;
+      position: relative;
+    }
+    .interest-card:hover {
+      border-color: rgba(0,212,255,0.25);
+      box-shadow: 0 0 28px rgba(0,212,255,0.05);
+    }
+    .card-shine {
+      position: absolute; inset: 0; border-radius: 6px;
+      pointer-events: none; z-index: 1;
+      opacity: 0; transition: opacity 0.3s;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 60%);
+    }
+    .interest-icon {
+      font-size: 1.4rem; margin-bottom: 0.75rem;
+      display: block; line-height: 1; opacity: 0.85;
+      position: relative; z-index: 2;
+    }
+    .interest-title {
+      font-family: var(--font-head);
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--text); margin-bottom: 0.4rem;
+      position: relative; z-index: 2;
+    }
+    .interest-desc {
+      font-size: 0.8rem; color: var(--muted);
+      line-height: 1.65;
+      position: relative; z-index: 2;
+    }
+
+    /* ── BOTTOM CTA ── */
+    .about-cta {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px; padding: 3rem 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .about-cta::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+    }
+    .about-cta h2 {
+      font-family: var(--font-head);
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 700; letter-spacing: -0.02em;
+      margin-bottom: 0.6rem;
+    }
+    .about-cta p {
+      color: var(--muted); font-size: 1rem;
+      max-width: 420px; line-height: 1.7;
+      margin-bottom: 1.75rem;
+    }
+    .about-cta-links { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    .cta-alt {
+      font-family: var(--font-head);
+      font-size: 0.82rem; font-weight: 500;
+      letter-spacing: 0.04em; color: var(--muted);
+      transition: color 0.2s;
+    }
+    .cta-alt:hover { color: var(--text); }
+
+    @media (max-width: 640px) {
+      .about-cta { padding: 2rem 1.5rem; }
+    }
+
+    /* ── SCROLL PROGRESS BAR ── */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--cyan), var(--purple));
+      z-index: 9998;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(0,212,255,0.5);
+    }
+
+    /* ── BIO STRONG HOVER ── */
+    .about-text strong {
+      position: relative;
+      transition: color 0.2s;
+    }
+    .about-text strong::after {
+      content: '';
+      position: absolute; left: 0; bottom: -1px;
+      width: 100%; height: 1px;
+      background: var(--cyan);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 6px rgba(0,212,255,0.4);
+    }
+    .about-text strong:hover { color: var(--cyan); }
+    .about-text strong:hover::after { transform: scaleX(1); }
+
+    /* ── EDUCATION CARD LIFT ── */
+    .edu-card {
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 0.3s, border-color 0.3s;
+    }
+    .edu-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+      border-color: rgba(0,212,255,0.2);
+    }
+
+    /* ── INFO ROW HOVER ACCENT ── */
+    .info-row {
+      position: relative;
+      padding-left: 0;
+      transition: padding-left 0.2s;
+    }
+    .info-row::before {
+      content: '';
+      position: absolute; left: -1.5rem; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--cyan);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.25s cubic-bezier(0.16,1,0.3,1);
+    }
+    .info-row:hover::before { transform: scaleY(1); }
+    .info-row:hover { padding-left: 0.5rem; }
+
+    /* ── CTA GLOW PULSE ── */
+    @keyframes cta-breathe {
+      0%, 100% { box-shadow: 0 0 0px rgba(0,212,255,0); }
+      50%       { box-shadow: 0 0 40px rgba(0,212,255,0.07); }
+    }
+    .about-cta { animation: cta-breathe 4s ease-in-out infinite; }
+
+    /* ── CORNER BRACKETS ── */
+    .interest-card::before,
+    .interest-card::after {
+      content: '';
+      position: absolute;
+      width: 10px; height: 10px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .interest-card::before {
+      top: 6px; left: 6px;
+      border-top: 1px solid var(--cyan);
+      border-left: 1px solid var(--cyan);
+    }
+    .interest-card::after {
+      bottom: 6px; right: 6px;
+      border-bottom: 1px solid var(--cyan);
+      border-right: 1px solid var(--cyan);
+    }
+    .interest-card:hover::before,
+    .interest-card:hover::after { opacity: 1; }
   </style>
 </head>
 <body>
 
-  <canvas id="page-bg"></canvas>
+  <div id="scroll-progress"></div>
+  <div id="cursor"><div class="cur-dot"></div></div>
 
+  <canvas id="page-bg"></canvas>
   <div class="bg-glow" aria-hidden="true">
     <div class="bg-blob b1"></div>
     <div class="bg-blob b2"></div>
@@ -152,89 +458,79 @@
       <li><a href="about.html" class="active">About</a></li>
       <li><a href="projects.html">Projects</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><a href="Aly_Embaby_Resume.pdf" download class="nav-resume">Resume</a></li>
+      <li><a href="Aly_Embaby_Resume.pdf" target="_blank" rel="noopener" class="nav-resume">Resume</a></li>
     </ul>
   </nav>
 
   <div class="page">
 
-    <div class="page-hero reveal">
-      <span class="overline">About</span>
-      <h1>Background &amp; Skills</h1>
-      <p>Experience, education, and everything I work with.</p>
+    <!-- PAGE HERO -->
+    <div class="page-hero">
+      <span class="watermark" aria-hidden="true">ABOUT</span>
+      <span class="overline" id="typed-overline"></span>
+      <h1 class="hero-anim" style="animation-delay:0.2s"><span id="glitch-heading" data-text="Background.">Background.</span></h1>
     </div>
 
-    <!-- INTRO + INFO -->
-    <div class="about-grid reveal">
-      <div class="about-text">
-        <p>
-          I'm <strong>Aly Embaby</strong>, a game development student at
-          <strong>Algonquin College</strong> finishing my Advanced Diploma in June 2026.
-        </p>
-        <p>
-          I currently work part-time as a <strong>Game Developer at Liquid Metal Games</strong>,
-          building and maintaining gameplay systems using Unreal Engine Blueprints and C++.
-        </p>
-        <p>
-          My work spans gameplay programming, UI systems, level design, and 3D art —
-          using <strong>Unity</strong>, <strong>Unreal Engine 5</strong>,
-          <strong>C++</strong>, <strong>C#</strong>, and a range of design and 3D tools.
-        </p>
-        <p>I care about the feel of a game as much as the code behind it.</p>
-      </div>
-      <div class="info-box">
-        <div class="info-box-title">Quick Info</div>
-        <div class="info-row">
-          <span class="info-lbl">Location</span>
-          <span class="info-val">Ottawa, ON</span>
+    <!-- INTRO + QUICK INFO -->
+    <div class="sec-block">
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p>
+            I'm <strong>Aly</strong>, a game developer based in <strong>Ottawa, ON</strong>.
+            I got into game dev out of genuine curiosity — I've spent most of my life
+            playing games and watching anime, and at some point I had to know how it all
+            worked under the hood.
+          </p>
+          <p>
+            Turns out I love building things just as much as experiencing them. That curiosity
+            turned into a real passion for <strong>gameplay programming</strong> — the systems
+            and mechanics that make a game <em>feel</em> good to play, not just look good.
+          </p>
+          <p>
+            Lately I've been pushing deeper into <strong>UI Toolkit</strong> in Unity and
+            <strong>GAS</strong> in Unreal — two systems I find genuinely interesting to work in.
+          </p>
         </div>
-        <div class="info-row">
-          <span class="info-lbl">Languages</span>
-          <span class="info-val">English &amp; Arabic</span>
+        <div class="info-box reveal-right">
+          <div class="info-box-title">Quick Info</div>
+          <div class="info-row">
+            <span class="info-lbl">Location</span>
+            <span class="info-val">Ottawa, ON</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Languages</span>
+            <span class="info-val">English &amp; Arabic</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Focus</span>
+            <span class="info-val">Gameplay Programming</span>
+          </div>
+          <div class="info-row">
+            <span class="info-lbl">Status</span>
+            <span class="info-val avail"><span class="status-dot"></span>Open to opportunities</span>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <!-- EXPERIENCE -->
-    <div class="sec-block reveal">
-      <div class="sec-head">
-        <span class="sec-num">01</span>
-        <span class="sec-line"></span>
-        <span class="sec-title">Experience</span>
-      </div>
-      <div class="exp-card">
-        <div class="exp-header">
-          <span class="exp-title">Game Developer (Part-Time)</span>
-          <span class="exp-date">2025 &mdash; Present</span>
-        </div>
-        <div class="exp-company">Liquid Metal Games</div>
-        <ul class="exp-bullets">
-          <li>Developed and maintained gameplay systems in Unreal Engine using Blueprints and C++.</li>
-          <li>Implemented and refined player movement, abilities, and interaction mechanics.</li>
-          <li>Diagnosed and resolved runtime defects through structured debugging.</li>
-          <li>Improved gameplay responsiveness and feature performance through optimization.</li>
-        </ul>
       </div>
     </div>
 
     <!-- EDUCATION -->
     <div class="sec-block reveal">
       <div class="sec-head">
-        <span class="sec-num">02</span>
+        <span class="sec-num">01</span>
         <span class="sec-line"></span>
         <span class="sec-title">Education</span>
       </div>
       <div class="edu-card">
         <div class="edu-name">Algonquin College</div>
-        <div class="edu-meta">
-          Game Development &mdash; Advanced Diploma
-        </div>
+        <div class="edu-meta">Game Development &mdash; Advanced Diploma &nbsp;&middot;&nbsp; Sep 2023 &ndash; Apr 2026</div>
         <div class="edu-badges">
-          <span class="tag-muted">Game Design</span>
-          <span class="tag-muted">AI Development</span>
-          <span class="tag-muted">Level Design</span>
-          <span class="tag-muted">3D Modeling</span>
-          <span class="tag-muted">Graphics Programming</span>
+          <span class="tag-muted">Programming Fundamentals</span>
+          <span class="tag-muted">Game Algorithms</span>
+          <span class="tag-muted">Game &amp; Graphics Programming</span>
+          <span class="tag-muted">High Level Development</span>
+          <span class="tag-muted">Technical Mathematics</span>
+          <span class="tag-muted">Advanced Game Programming</span>
+          <span class="tag-muted">Capstone</span>
         </div>
       </div>
     </div>
@@ -242,66 +538,99 @@
     <!-- SKILLS -->
     <div class="sec-block reveal">
       <div class="sec-head">
-        <span class="sec-num">03</span>
+        <span class="sec-num">02</span>
         <span class="sec-line"></span>
         <span class="sec-title">Skills</span>
       </div>
-      <div class="skills-grid">
-        <div class="skill-group">
-          <h4>Game Engines</h4>
-          <div class="skill-tags">
-            <span class="tag-muted">Unity</span>
-            <span class="tag-muted">Unreal Engine 5</span>
-            <span class="tag-muted">Blueprints</span>
+      <div class="skills-table">
+        <div class="scan-line" id="skills-scan"></div>
+        <div class="skill-row">
+          <span class="skill-cat">Engines</span>
+          <div class="skill-items">
+            <span>Unreal Engine 5 (C++ &amp; Blueprints)</span><span class="skill-sep">·</span>
+            <span>Unity (C#)</span>
           </div>
         </div>
-        <div class="skill-group">
-          <h4>Languages</h4>
-          <div class="skill-tags">
-            <span class="tag-muted">C++</span>
-            <span class="tag-muted">C#</span>
-            <span class="tag-muted">JavaScript</span>
-            <span class="tag-muted">GLSL</span>
-            <span class="tag-muted">OpenGL</span>
+        <div class="skill-row">
+          <span class="skill-cat">Systems</span>
+          <div class="skill-items">
+            <span>Gameplay Systems</span><span class="skill-sep">·</span>
+            <span>AI Behavior Trees (AIController, Tasks)</span><span class="skill-sep">·</span>
+            <span>Ability Systems (GAS)</span><span class="skill-sep">·</span>
+            <span>UI Systems (UMG &amp; UI Toolkit)</span><span class="skill-sep">·</span>
+            <span>Input &amp; Character Controllers</span><span class="skill-sep">·</span>
+            <span>Data-Driven Design (Scriptable Objects)</span><span class="skill-sep">·</span>
+            <span>Component-Based Architecture</span>
           </div>
         </div>
-        <div class="skill-group">
-          <h4>Gameplay Systems</h4>
-          <div class="skill-tags">
-            <span class="tag-muted">GAS</span>
-            <span class="tag-muted">Scriptable Objects</span>
-            <span class="tag-muted">Animation Montages</span>
-            <span class="tag-muted">UI Toolkit</span>
-            <span class="tag-muted">Game Loops</span>
+        <div class="skill-row">
+          <span class="skill-cat">Tools</span>
+          <div class="skill-items">
+            <span>Git</span><span class="skill-sep">·</span>
+            <span>Jira</span><span class="skill-sep">·</span>
+            <span>Visual Studio</span><span class="skill-sep">·</span>
+            <span>VS Code</span>
           </div>
         </div>
-        <div class="skill-group">
-          <h4>Art &amp; 3D</h4>
-          <div class="skill-tags">
-            <span class="tag-muted">3D MAX</span>
-            <span class="tag-muted">Photoshop</span>
-            <span class="tag-muted">Illustrator</span>
-            <span class="tag-muted">UV Mapping</span>
-            <span class="tag-muted">Shaders</span>
+        <div class="skill-row">
+          <span class="skill-cat">Art &amp; Pipeline</span>
+          <div class="skill-items">
+            <span>3DS Max</span><span class="skill-sep">·</span>
+            <span>Photoshop</span><span class="skill-sep">·</span>
+            <span>Illustrator</span><span class="skill-sep">·</span>
+            <span>Premiere Pro</span>
           </div>
         </div>
-        <div class="skill-group">
-          <h4>Tools &amp; Workflow</h4>
-          <div class="skill-tags">
-            <span class="tag-muted">Git</span>
-            <span class="tag-muted">Jira</span>
-            <span class="tag-muted">Visual Studio</span>
-            <span class="tag-muted">VS Code</span>
+      </div>
+    </div>
+
+    <!-- OUTSIDE THE ENGINE -->
+    <div class="sec-block reveal">
+      <div class="sec-head">
+        <span class="sec-num">03</span>
+        <span class="sec-line"></span>
+        <span class="sec-title">Outside the Engine</span>
+      </div>
+      <div class="interests-grid">
+        <div class="interest-card">
+          <div class="card-shine"></div>
+          <span class="interest-icon">&#127918;</span>
+          <div class="interest-title">Gaming</div>
+          <div class="interest-desc">
+            Persona 5, GTA V, The Witcher 3, God of War, Assassin's Creed —
+            mostly open world, anything with strong world-building or systems depth.
           </div>
         </div>
-        <div class="skill-group">
-          <h4>Documentation</h4>
-          <div class="skill-tags">
-            <span class="tag-muted">UML Diagrams</span>
-            <span class="tag-muted">Sequence Diagrams</span>
-            <span class="tag-muted">TDD</span>
-            <span class="tag-muted">Level Design Docs</span>
+        <div class="interest-card">
+          <div class="card-shine"></div>
+          <span class="interest-icon">&#128250;</span>
+          <div class="interest-title">Anime &amp; Manga</div>
+          <div class="interest-desc">
+            Big fan of anime and manga — That Time I Got Reincarnated as a Slime
+            is one of my favorites. Always got something open on the side.
           </div>
+        </div>
+        <div class="interest-card">
+          <div class="card-shine"></div>
+          <span class="interest-icon">&#9917;</span>
+          <div class="interest-title">Sports</div>
+          <div class="interest-desc">
+            Doesn't really matter what sport it is. If my friends are playing,
+            I'm in — it's more about getting out and having a good time than the game itself.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM CTA -->
+    <div class="sec-block reveal">
+      <div class="about-cta">
+        <h2>Let's work together.</h2>
+        <p>Open to game developer and programmer roles. Have a project or an opportunity? I'd love to hear about it.</p>
+        <div class="about-cta-links">
+          <a href="contact.html" class="btn btn-cyan">Get in Touch</a>
+          <a href="Aly_Embaby_Resume.pdf" target="_blank" rel="noopener" class="cta-alt">&#8599; View Resume</a>
+          <a href="projects.html" class="cta-alt">View Projects &nearr;</a>
         </div>
       </div>
     </div>
@@ -313,15 +642,161 @@
   </footer>
 
   <script>
+
+    // ── CUSTOM CURSOR ──
     (function () {
+      const cur = document.getElementById('cursor');
+      if (!cur) return;
+      let visible = false;
+      document.addEventListener('mousemove', e => {
+        cur.style.left = e.clientX + 'px';
+        cur.style.top  = e.clientY + 'px';
+        if (!visible) { cur.style.opacity = '1'; visible = true; }
+      });
+      document.addEventListener('mouseleave', () => { cur.style.opacity = '0'; visible = false; });
+      document.querySelectorAll('a, button').forEach(el => {
+        el.addEventListener('mouseenter', () => cur.classList.add('hov'));
+        el.addEventListener('mouseleave', () => cur.classList.remove('hov'));
+      });
+    })();
+
+    // ── SCROLL PROGRESS BAR ──
+    (function () {
+      const bar = document.getElementById('scroll-progress');
+      if (!bar) return;
+      window.addEventListener('scroll', () => {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (window.scrollY / max * 100) + '%';
+      }, { passive: true });
+    })();
+
+    // ── OVERLINE TYPING ──
+    (function () {
+      const el = document.getElementById('typed-overline');
+      if (!el) return;
+      const text = 'About';
+      let i = 0;
+      function type() {
+        if (i <= text.length) {
+          el.textContent = text.slice(0, i);
+          i++;
+          setTimeout(type, 80);
+        }
+      }
+      setTimeout(type, 300);
+    })();
+
+    // ── WATERMARK PARALLAX ──
+    (function () {
+      const hero = document.querySelector('.page-hero');
+      const wm   = hero ? hero.querySelector('.watermark') : null;
+      if (!hero || !wm) return;
+      document.addEventListener('mousemove', e => {
+        const dx = (e.clientX / window.innerWidth  - 0.5) * 18;
+        const dy = (e.clientY / window.innerHeight - 0.5) * 10;
+        wm.style.transform = `translateY(calc(-50% + ${dy}px)) translateX(${dx}px)`;
+      });
+    })();
+
+    // ── GLITCH ON HEADING ──
+    (function () {
+      const el = document.getElementById('glitch-heading');
+      if (!el) return;
+      function doGlitch() {
+        el.classList.add('glitching');
+        setTimeout(() => el.classList.remove('glitching'), 420);
+        setTimeout(doGlitch, 4000 + Math.random() * 7000);
+      }
+      setTimeout(doGlitch, 2500);
+    })();
+
+    // ── SKILLS SCAN LINE ──
+    (function () {
+      const scan = document.getElementById('skills-scan');
+      const table = scan ? scan.parentElement : null;
+      if (!scan || !table) return;
+
+      function runScan() {
+        const h = table.offsetHeight;
+        scan.style.transition = 'none';
+        scan.style.top = '0px';
+        scan.style.opacity = '1';
+        scan.style.transition = `top ${h * 4}ms linear, opacity 0.3s`;
+        requestAnimationFrame(() => {
+          scan.style.top = h + 'px';
+        });
+        setTimeout(() => { scan.style.opacity = '0'; }, h * 4 - 300);
+        setTimeout(runScan, 5000 + Math.random() * 6000);
+      }
+      setTimeout(runScan, 2000);
+    })();
+
+    // ── INTEREST CARD TILT ──
+    (function () {
+      document.querySelectorAll('.interest-card').forEach(card => {
+        const shine = card.querySelector('.card-shine');
+        card.addEventListener('mousemove', e => {
+          const r = card.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width  - 0.5;
+          const y = (e.clientY - r.top)  / r.height - 0.5;
+          card.style.transition = 'border-color 0.25s, box-shadow 0.25s, transform 0.08s ease-out';
+          card.style.transform  = `perspective(600px) rotateY(${x * 10}deg) rotateX(${-y * 7}deg) scale3d(1.02,1.02,1.02)`;
+          if (shine) {
+            shine.style.opacity = '1';
+            shine.style.background = `radial-gradient(circle at ${(x+0.5)*100}% ${(y+0.5)*100}%, rgba(255,255,255,0.06) 0%, transparent 60%)`;
+          }
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transition = 'border-color 0.25s, box-shadow 0.25s, transform 0.5s cubic-bezier(0.16,1,0.3,1)';
+          card.style.transform  = '';
+          if (shine) shine.style.opacity = '0';
+        });
+      });
+    })();
+
+    // ── SCROLL REVEAL + SKILL ROW STAGGER ──
+    (function () {
+      // General reveal
       const io = new IntersectionObserver((entries) => {
         entries.forEach(e => {
-          if (e.isIntersecting) { e.target.classList.add('revealed'); io.unobserve(e.target); }
+          if (!e.isIntersecting) return;
+          e.target.classList.add('revealed');
+          io.unobserve(e.target);
         });
       }, { threshold: 0.1 });
-      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+      document.querySelectorAll('.reveal, .reveal-right').forEach(el => io.observe(el));
+
+      // Skill row stagger
+      const skillsIo = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const rows = e.target.querySelectorAll('.skill-row');
+          rows.forEach((row, i) => {
+            setTimeout(() => row.classList.add('row-visible'), i * 80);
+          });
+          skillsIo.unobserve(e.target);
+        });
+      }, { threshold: 0.1 });
+      const table = document.querySelector('.skills-table');
+      if (table) skillsIo.observe(table);
+
+      // Interest card stagger
+      const cardsIo = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (!e.isIntersecting) return;
+          const cards = e.target.querySelectorAll('.interest-card');
+          cards.forEach((card, i) => {
+            setTimeout(() => card.classList.add('card-visible'), i * 120);
+          });
+          cardsIo.unobserve(e.target);
+        });
+      }, { threshold: 0.1 });
+      const grid = document.querySelector('.interests-grid');
+      if (grid) cardsIo.observe(grid);
     })();
   </script>
   <script src="bg.js"></script>
+  <script src="secret.js"></script>
+
 </body>
 </html>
