@@ -122,7 +122,8 @@
     }
     #lightbox.open { opacity: 1; pointer-events: all; }
     #lightbox img {
-      max-width: 90vw; max-height: 88vh;
+      height: 82vh; width: auto;
+      max-width: 92vw;
       object-fit: contain; border-radius: 6px;
       box-shadow: 0 32px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,212,255,0.12);
       transform: scale(0.94);
@@ -298,6 +299,12 @@
     }
     .proj-thumbs.five-col .proj-thumb {
       height: 80px;
+    }
+    .proj-thumbs.four-col {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .proj-thumbs.four-col .proj-thumb {
+      height: 90px;
     }
     .proj-thumb {
       height: 100px;
@@ -584,7 +591,7 @@
 
     <div class="projects-list">
 
-      <!-- ── GOING ONCE! ── -->
+      <!-- ── 1. GOING ONCE! ── -->
       <div class="proj-card featured reveal" id="going-once" data-types="unity">
         <div class="proj-main-img unity">
           <video src="Going%20Once!/Trailer.mp4" alt="Going Once! gameplay" muted loop playsinline autoplay controls></video>
@@ -630,6 +637,54 @@
       </div>
 
 
+      <!-- ── 2. RUINOUS HUNTER ── -->
+      <div class="proj-card reveal" id="ruinous-hunter" data-types="unreal">
+        <div class="proj-main-img unreal">
+          <video src="RuinousHunter/Ruinous%20Hunter.mp4" alt="Ruinous Hunter gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs four-col">
+          <div class="proj-thumb">
+            <img src="RuinousHunter/Ruinous%20Hunter.png" alt="Ruinous Hunter screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="RuinousHunter/Ruinous%20Hunter2.png" alt="Ruinous Hunter screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="RuinousHunter/Ruinous%20Hunter3.png" alt="Ruinous Hunter screenshot 3" />
+          </div>
+          <div class="proj-thumb">
+            <img src="RuinousHunter/Ruinous%20Hunter4.png" alt="Ruinous Hunter screenshot 4" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Ruinous Hunter - Liquid Metal Games</h2>
+            <span class="proj-engine">Unreal Engine 5</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C++</span>
+            <span class="tag-cyan">Blueprints</span>
+            <span class="tag-cyan">GAS</span>
+            <span class="tag-purple">Combat</span>
+            <span class="tag-purple">Enemy AI</span>
+          </div>
+          <p class="proj-intro">Part-time Game Developer at Liquid Metal Games on Ruinous Hunter, a dark fantasy Soulslike about a memory-stricken mercenary who recovers fragments of his past by defeating bosses, each memory unlocking new powers. Focused on combat, traversal, and AI systems.</p>
+          <ul class="proj-desc">
+            <li>Developed gameplay systems in Blueprints, C++, and GAS including health/shield/stamina, and hit reactions.</li>
+            <li>Implemented player combat including dashing, dodging, multiple weapon types with equip/unequip, projectiles, and socket-based weapon attachment.</li>
+            <li>Built traversal and movement systems including mantling, camera shake, and level transitions.</li>
+            <li>Improved FPS by 20-30 frames by implementing distance-based rendering for foliage.</li>
+            <li>Programmed enemy AI with patrol behaviours, death logic, and combat interactions.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+            <span class="proj-badge">Liquid Metal Games &middot; May 2025-Present</span>
+          </div>
+        </div>
+      </div>
+
+
       <!-- ── MARIO GAMES ── -->
       <div class="proj-card reveal" id="mario-games" data-types="unity unreal">
         <div class="proj-main-img unity">
@@ -668,6 +723,7 @@
             <li>Designed and built a lava level with hazards like Podoboos, Roto Discs, Thwomps, and Spikes.</li>
             <li>Programmed enemy behaviors - Dry Bones, Goombas, Piranha Plants, and the Donut Lift platform.</li>
             <li>Implemented interactive systems: Question Mark blocks, hidden item boxes, coin-to-block toggle switch, and power-ups (One-Up, Flower Power).</li>
+            <li>Rebuilt some of the same enemies in Unreal Engine to learn how Unreal handles platformer mechanics.</li>
           </ul>
           <div class="proj-footer">
             <div class="proj-links">
@@ -677,7 +733,106 @@
       </div>
 
 
-      <!-- ── PATH OF TRIALS ── -->
+      <!-- ── 4. TOWER DEFENSE ── -->
+      <div class="proj-card reveal" id="tower-defense" data-types="cpp">
+        <div class="proj-main-img cpp">
+          <video src="Tower%20Def/TowerDef.mp4" alt="Tower Defense gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <img src="Tower%20Def/Tower%20Def.png" alt="Tower Defense screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Tower%20Def/Tower%20Def2.png" alt="Tower Defense screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Tower%20Def/Tower%20Def3.png" alt="Tower Defense screenshot 3" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Tower Defense</h2>
+            <span class="proj-engine">C++</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C++</span>
+            <span class="tag-cyan">OpenGL</span>
+            <span class="tag-cyan">ImGui</span>
+            <span class="tag-purple">Wave System</span>
+            <span class="tag-purple">Tower Placement</span>
+            <span class="tag-purple">Pathfinding</span>
+          </div>
+          <p class="proj-intro">A top-down tower defense built in C++ on a small OpenGL framework. Place towers and walls to shape the path enemies take, then survive five waves that get harder each round.</p>
+          <ul class="proj-desc">
+            <li>Built a 5-wave system with faster spawns, tougher enemy mixes, and a short break with a coin bonus between waves.</li>
+            <li>Added three placement modes - tower, wall, and sell - with sell refunding coins and recalculating enemy paths.</li>
+            <li>Made three enemy types (Basic, Fast, Tank) each with their own speed, health, and damage values.</li>
+            <li>Wrote a player health system that drains when enemies reach the end and triggers game over at zero.</li>
+            <li>Built ImGui HUD showing wave progress, coins, kills, and a color-shifting health bar.</li>
+            <li>Added win and game over screens with restart and menu buttons.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── 5. CUSTOM ENGINE ── -->
+      <div class="proj-card reveal" id="custom-engine" data-types="cpp">
+        <div class="proj-main-img cpp">
+          <video src="Engine/Engine.mp4" alt="Custom Engine showcase" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs five-col">
+          <div class="proj-thumb">
+            <img src="Engine/EngineA1.png" alt="Custom Engine - foundations" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Engine/EngineA2(Box2D).png" alt="Custom Engine - Box2D physics" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Engine/EngineA2(Jolt).png" alt="Custom Engine - Jolt 3D physics" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Engine/EngineA3.png" alt="Custom Engine - heightmap terrain" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Engine/EngineA4.png" alt="Custom Engine - multiple dynamic lights" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Custom C++ Engine</h2>
+            <span class="proj-engine">C++</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C++</span>
+            <span class="tag-cyan">bgfx</span>
+            <span class="tag-cyan">Box2D</span>
+            <span class="tag-cyan">Jolt Physics</span>
+            <span class="tag-purple">ECS</span>
+            <span class="tag-purple">Heightmap Terrain</span>
+            <span class="tag-purple">Multi-Light Shader</span>
+          </div>
+          <p class="proj-intro">A C++ game engine built from scratch over a semester, growing from a rotating cube to a full 3D scene with terrain, physics, and lighting.</p>
+          <ul class="proj-desc">
+            <li>Built an entity-component system with scenes, game objects, and a component manager.</li>
+            <li>Wrote a resource manager that handles meshes, textures, shaders, and materials.</li>
+            <li>Wrapped Box2D and Jolt Physics behind a single interface so 2D and 3D scenes share the same physics calls.</li>
+            <li>Loaded OBJ models and built a heightmap terrain mesh from a PNG, with barycentric sampling so the player walks on the surface.</li>
+            <li>Wrote a multi-light fragment shader that picks the closest 8 lights per object each frame.</li>
+            <li>Added a free camera with mouse look and keyboard input.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── 6. PATH OF TRIALS ── -->
       <div class="proj-card reveal" id="platformer" data-types="unreal design">
         <div class="proj-main-img unreal">
           <video src="SideScroller/SideScroller%20Project.mp4" alt="Path of Trials gameplay" muted loop playsinline autoplay controls></video>
@@ -723,54 +878,8 @@
         </div>
       </div>
 
-      <!-- ── ARCADE MINIGAMES ── -->
-      <div class="proj-card reveal" id="arcade-minigames" data-types="unity">
-        <div class="proj-main-img unity">
-          <video src="Arcade/Arcade%20Minigames%20Project.mp4" alt="Arcade Minigames gameplay" muted loop playsinline autoplay controls></video>
-        </div>
-        <div class="proj-thumbs five-col">
-          <div class="proj-thumb">
-            <img src="Arcade/Screenshot_1.png" alt="Arcade Minigames screenshot 1" />
-          </div>
-          <div class="proj-thumb">
-            <img src="Arcade/Screenshot_2.png" alt="Arcade Minigames screenshot 2" />
-          </div>
-          <div class="proj-thumb">
-            <img src="Arcade/Screenshot_3.png" alt="Arcade Minigames screenshot 3" />
-          </div>
-          <div class="proj-thumb">
-            <img src="Arcade/Screenshot_4.png" alt="Arcade Minigames screenshot 4" />
-          </div>
-          <div class="proj-thumb">
-            <img src="Arcade/Screenshot_5.png" alt="Arcade Minigames screenshot 5" />
-          </div>
-        </div>
-        <div class="proj-body">
-          <div class="proj-top">
-            <h2 class="proj-title">Arcade Minigames</h2>
-            <span class="proj-engine">Unity</span>
-          </div>
-          <div class="tags">
-            <span class="tag-cyan">C#</span>
-            <span class="tag-cyan">UI Toolkit</span>
-            <span class="tag-purple">12 Minigames</span>
-            <span class="tag-purple">High Scores</span>
-          </div>
-          <p class="proj-intro">A collection of arcade-style minigames built in Unity using UI Toolkit.</p>
-          <ul class="proj-desc">
-            <li>Built 12 arcade minigames in Unity with a central hub for navigation between games.</li>
-            <li>Designed per-game color themes using UI Toolkit (UXML/USS) with consistent styling across all screens.</li>
-            <li>Implemented persistent high score tracking for each game using PlayerPrefs.</li>
-          </ul>
-          <div class="proj-footer">
-            <div class="proj-links">
-            </div>
-          </div>
-        </div>
-      </div>
 
-
-      <!-- ── 2D STEALTH GAME ── -->
+      <!-- ── 7. 2D STEALTH GAME ── -->
       <div class="proj-card reveal" id="stealth-game" data-types="unity">
         <div class="proj-main-img unity">
           <video src="Stealth/Stealth%20Project.mp4" alt="2D Stealth Game gameplay" muted loop playsinline autoplay controls></video>
@@ -817,42 +926,261 @@
       </div>
 
 
-      <!-- ── 2D SURVIVAL GAME ── -->
-      <div class="proj-card reveal" data-types="cpp">
+      <!-- ── 8. SURVIVORS ── -->
+      <div class="proj-card reveal" id="survivors" data-types="cpp">
         <div class="proj-main-img cpp">
-          <div class="proj-placeholder">
-            <span class="p-icon">&#9876;</span>
-            <span class="p-name">2D Survival Game</span>
-            <span class="p-hint">Screenshots coming soon</span>
-          </div>
+          <video src="Survivors/Survivors.mp4" alt="Survivors gameplay" muted loop playsinline autoplay controls></video>
         </div>
         <div class="proj-thumbs">
           <div class="proj-thumb">
-            <div class="thumb-add"><span class="t-plus"></span><span class="t-label">Coming Soon</span></div>
+            <img src="Survivors/Survivors.png" alt="Survivors screenshot 1" />
           </div>
           <div class="proj-thumb">
-            <div class="thumb-add"><span class="t-plus"></span><span class="t-label">Coming Soon</span></div>
+            <img src="Survivors/Survivors2.png" alt="Survivors screenshot 2" />
           </div>
           <div class="proj-thumb">
-            <div class="thumb-add"><span class="t-plus"></span><span class="t-label">Coming Soon</span></div>
+            <img src="Survivors/Survivors3.png" alt="Survivors screenshot 3" />
           </div>
         </div>
         <div class="proj-body">
           <div class="proj-top">
-            <h2 class="proj-title">2D Survival Game</h2>
+            <h2 class="proj-title">Survivors - Top-Down Shooter</h2>
             <span class="proj-engine">C++</span>
           </div>
           <div class="tags">
             <span class="tag-cyan">C++</span>
-            <span class="tag-cyan">Enemy AI</span>
-            <span class="tag-purple">HUD</span>
-            <span class="tag-purple">Spawning</span>
+            <span class="tag-cyan">Auto-Targeting</span>
+            <span class="tag-purple">Enemy AI</span>
+            <span class="tag-purple">Sprite Animation</span>
           </div>
-          <p class="proj-intro">A top-down survival game built in C++ with weapon leveling, enemy AI, and a HUD system.</p>
+          <p class="proj-intro">A top-down survivors-style shooter made in C++ using a 2D game framework. Enemies spawn in waves and the player's weapons fire on their own. Killing enemies drops XP balls, and picking them up makes the weapons stronger.</p>
           <ul class="proj-desc">
-            <li>Top-down game with player controls, weapon leveling, and HUD for stats.</li>
-            <li>Multi-hit weapon mechanics, enemy AI, and dynamic spawning systems.</li>
-            <li>Optimized through systematic debugging and performance tuning.</li>
+            <li>Two auto-firing weapons - one shoots at the closest enemy, the other fires a ring of bullets around the player.</li>
+            <li>XP balls drop when enemies die and speed up the weapons when picked up.</li>
+            <li>Two enemy types with their own speed, health, and animations.</li>
+            <li>HUD shows XP, kills, and time.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── 9. SPRINT RACER ── -->
+      <div class="proj-card reveal" id="sprint-racer" data-types="cpp">
+        <div class="proj-main-img cpp">
+          <video src="Sprint%20Racer/Sprint%20Racer.mp4" alt="Sprint Racer gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <img src="Sprint%20Racer/Sprint%20Racer.png" alt="Sprint Racer screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Sprint%20Racer/Sprint%20Racer2.png" alt="Sprint Racer screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Sprint%20Racer/Sprint%20Racer3.png" alt="Sprint Racer screenshot 3" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Sprint Racer</h2>
+            <span class="proj-engine">C++</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C++</span>
+            <span class="tag-cyan">Tween System</span>
+            <span class="tag-purple">Lap Timer</span>
+            <span class="tag-purple">Pickups</span>
+          </div>
+          <p class="proj-intro">A top-down arcade racer built in C++ using a 2D game framework. Drawn entirely with basic shapes for a retro look.</p>
+          <ul class="proj-desc">
+            <li>Built car physics with smooth acceleration, braking, and wall bouncing.</li>
+            <li>Made a reusable Tween class for animating pickups, menus, and race results.</li>
+            <li>Added a lap timer that tracks your current and best lap.</li>
+            <li>Included oil slick hazards, collectible pickups, and an F1 debug overlay.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── 10. ARCADE MINIGAMES ── -->
+      <div class="proj-card reveal" id="arcade-minigames" data-types="unity">
+        <div class="proj-main-img unity">
+          <video src="Arcade/Arcade%20Minigames%20Project.mp4" alt="Arcade Minigames gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs five-col">
+          <div class="proj-thumb">
+            <img src="Arcade/Screenshot_1.png" alt="Arcade Minigames screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Arcade/Screenshot_2.png" alt="Arcade Minigames screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Arcade/Screenshot_3.png" alt="Arcade Minigames screenshot 3" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Arcade/Screenshot_4.png" alt="Arcade Minigames screenshot 4" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Arcade/Screenshot_5.png" alt="Arcade Minigames screenshot 5" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Arcade Minigames</h2>
+            <span class="proj-engine">Unity</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C#</span>
+            <span class="tag-cyan">UI Toolkit</span>
+            <span class="tag-purple">12 Minigames</span>
+            <span class="tag-purple">High Scores</span>
+          </div>
+          <p class="proj-intro">A collection of arcade-style minigames built in Unity using UI Toolkit.</p>
+          <ul class="proj-desc">
+            <li>Built 12 arcade minigames in Unity with a central hub for navigation between games.</li>
+            <li>Designed per-game color themes using UI Toolkit (UXML/USS) with consistent styling across all screens.</li>
+            <li>Implemented persistent high score tracking for each game using PlayerPrefs.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── 11. AI TANK COMBAT ── -->
+      <div class="proj-card reveal" id="ai-tank-combat" data-types="unity">
+        <div class="proj-main-img unity">
+          <video src="AI%20Tank%20Combat/AI%20Tank%20Combat.mp4" alt="AI Tank Combat gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs four-col">
+          <div class="proj-thumb">
+            <img src="AI%20Tank%20Combat/AI%20Tank%20Combat.png" alt="AI Tank Combat screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="AI%20Tank%20Combat/AI%20Tank%20Combat2.png" alt="AI Tank Combat screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="AI%20Tank%20Combat/AI%20Tank%20Combat3.png" alt="AI Tank Combat screenshot 3" />
+          </div>
+          <div class="proj-thumb">
+            <img src="AI%20Tank%20Combat/AI%20Tank%20Combat4.png" alt="AI Tank Combat screenshot 4" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">AI Tank Combat</h2>
+            <span class="proj-engine">Unity</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C#</span>
+            <span class="tag-cyan">Behaviour Trees</span>
+            <span class="tag-purple">Blackboard</span>
+            <span class="tag-purple">AI</span>
+          </div>
+          <p class="proj-intro">A player-vs-AI tank game in Unity where the AI uses a behaviour tree to hunt down the player's detonator.</p>
+          <ul class="proj-desc">
+            <li>Built a behaviour tree with custom action nodes for turret aiming, shooting, and tank movement.</li>
+            <li>AI scans and shoots barrels to uncover hidden detonators, prioritizing the player's over its own.</li>
+            <li>When the player's detonator is exposed, the AI switches to a chase strategy and tries to run it over.</li>
+            <li>Used a blackboard to share game state between nodes (barrel list, detonator positions, tank status).</li>
+            <li>Made the AI defend its own detonator when revealed and time shots around a 0.4 second cooldown.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── 12. AI SLOT CARS ── -->
+      <div class="proj-card reveal" id="ai-slot-cars" data-types="unity">
+        <div class="proj-main-img unity">
+          <video src="AI%20Slot%20Cars/AI%20Slot%20Cars.mp4" alt="AI Slot Cars gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <img src="AI%20Slot%20Cars/AI%20Slot%20Cars.png" alt="AI Slot Cars screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="AI%20Slot%20Cars/AI%20Slot%20Cars2.png" alt="AI Slot Cars screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="AI%20Slot%20Cars/AI%20Slot%20Cars3.png" alt="AI Slot Cars screenshot 3" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">AI Slot Cars</h2>
+            <span class="proj-engine">Unity</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C#</span>
+            <span class="tag-cyan">Catmull-Rom Splines</span>
+            <span class="tag-purple">AI Racing</span>
+            <span class="tag-purple">HUD</span>
+          </div>
+          <p class="proj-intro">A player-vs-AI slot car racer built in Unity on a figure-eight spline track.</p>
+          <ul class="proj-desc">
+            <li>Laid out a figure-eight track using Catmull-Rom splines with two parallel paths.</li>
+            <li>Built AI driving logic that samples ahead on the spline to detect sharp corners and adjust speed automatically.</li>
+            <li>Added crash detection based on corner radius - exceeding the speed limit sends the car into a spin.</li>
+            <li>Implemented player controls with acceleration, braking, and a spacebar reset for crashes.</li>
+            <li>Displayed per-car lap count, speed, crash state, and a winner screen on the HUD.</li>
+          </ul>
+          <div class="proj-footer">
+            <div class="proj-links">
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ── 13. ASTEROIDS ── -->
+      <div class="proj-card reveal" id="asteroids" data-types="cpp">
+        <div class="proj-main-img cpp">
+          <video src="Asteroids/Asteroids.mp4" alt="Asteroids gameplay" muted loop playsinline autoplay controls></video>
+        </div>
+        <div class="proj-thumbs">
+          <div class="proj-thumb">
+            <img src="Asteroids/Asteroids.png" alt="Asteroids screenshot 1" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Asteroids/Asteroids2.png" alt="Asteroids screenshot 2" />
+          </div>
+          <div class="proj-thumb">
+            <img src="Asteroids/Asteroids3.png" alt="Asteroids screenshot 3" />
+          </div>
+        </div>
+        <div class="proj-body">
+          <div class="proj-top">
+            <h2 class="proj-title">Asteroids</h2>
+            <span class="proj-engine">C++</span>
+          </div>
+          <div class="tags">
+            <span class="tag-cyan">C++</span>
+            <span class="tag-cyan">Arcade</span>
+            <span class="tag-purple">Screen Wrap</span>
+            <span class="tag-purple">Pickups</span>
+          </div>
+          <p class="proj-intro">A classic arcade Asteroids made in C++ using a 2D game framework. Built as a single-player score run where you clear 20 asteroids to win.</p>
+          <ul class="proj-desc">
+            <li>Created a triangle-shaped player ship with input driven movement and Spacebar shooting.</li>
+            <li>Implemented 20 asteroids that destroy in one hit, with collision detection against the player and bullets.</li>
+            <li>Programmed player death and respawn logic when an asteroid hits the ship.</li>
+            <li>Added screen-wrap behaviour so the ship, bullets, and asteroids re-enter from the opposite side when they leave the play area.</li>
+            <li>Designed a shield pickup with a 1 in 7 drop chance from destroyed asteroids.</li>
+            <li>Built a game-won text screen that triggers once all asteroids are cleared.</li>
           </ul>
           <div class="proj-footer">
             <div class="proj-links">
@@ -994,7 +1322,7 @@
     (function () {
       const el = document.getElementById('proj-count');
       if (!el) return;
-      const target = 6;
+      const target = 13;
       let count = 0;
       setTimeout(() => {
         const iv = setInterval(() => {
